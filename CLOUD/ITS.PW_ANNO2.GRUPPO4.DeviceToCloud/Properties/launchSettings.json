@@ -1,0 +1,11 @@
+﻿{
+  "profiles": {
+    "ITS.PW_ANNO2.GRUPPO4.DeviceToCloud": {
+      "commandName": "Project",
+      "dotnetRunMessages": "true",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}
