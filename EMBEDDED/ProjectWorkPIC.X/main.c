@@ -38,9 +38,13 @@
 #define SET_TEMP_DISPLAY 3
 #define TEMP_HUM_DISPLAY 2
 
+#define CLOCKWISE_ROTATION 0x00
+#define COUNTER_CLOCKWISE_ROTATION 0x01
+
 //flags
 #define NEW_READING_AVAILABLE 0x01
 #define KEY_PRESSED 0x02
+
 unsigned char flags = 0x00;
 //|newReadingAvailable|keyPressed|
 
@@ -61,7 +65,10 @@ float oldHumidity = 50.0;
 int postScalerTemp = 0;
 int postScalerHum = 0;
 char alarmOn = 0;
-char oldRA5;
+char oldRB2;
+char oldRB3;
+char doorOpen = 0;
+char oldDoorOpen = 0;
 
 const unsigned char colMask[3] = 
 {
@@ -76,8 +83,8 @@ const unsigned char rowMask[4] =
     0b00000010,
     0b00000001
 };
-const char clockWise[5] = {0x03, 0x06, 0x0C, 0x09, 0x03};
-const char counterClockWise[5] = {0x09, 0x0C, 0x06, 0x03, 0x09};
+const char clockWise[5] = {0x30, 0x60, 0xC0, 0x90, 0x30};
+const char counterClockWise[5] = {0x90, 0xC0, 0x60, 0x30, 0x90};
 const unsigned char keypad[] = {1,4,7,'*',2,5,8,0,3,6,9,'#'}; 
 const char *startDisplay = {"System Started"};
 const char *displays[] = 
@@ -89,6 +96,7 @@ const char *displays[] =
 };
 
 void CheckAlarmButton(void);
+void CheckOpenDoorButton(void);
 unsigned char CheckKeypad(void);
 void DriveMotor(char);
 void HandleKeypadReading(unsigned char);
@@ -116,6 +124,7 @@ int main()
         ReadHumidity();
         ReadTemperature();
         CheckAlarmButton();
+        CheckOpenDoorButton();
         if(currentDisplay == TEMP_HUM_DISPLAY) UpdateTempHumDisplay();
         if(flags & NEW_READING_AVAILABLE)
         {
@@ -146,19 +155,19 @@ void CheckAlarmButton()
     TRISB |= 0x04;
     TRISC = 0x00;
 
-    if(!(PORTB & 0x04) && oldRA5)
+    if(!(PORTB & 0x04) && oldRB2)
     {
-        oldRA5 = 0;
+        oldRB2 = 0;
         if(alarmOn)
         {
             alarmOn = 0;
         }
         else alarmOn = 1;
     }
-    if((PORTB & 0x04) && !oldRA5)
+    if((PORTB & 0x04) && !oldRB2)
     {
         __delay_ms(10);
-        if((PORTB & 0x04) && !oldRA5) oldRA5 = 1;
+        if((PORTB & 0x04) && !oldRB2) oldRB2 = 1;
     }
     if(alarmOn) PORTC |= 0x02;
     else PORTC &= ~0x02;
@@ -191,9 +200,40 @@ unsigned char CheckKeypad()
     return keypad[keyValue];
 }
 
+//OPEN DOOR ON RB3
+void CheckOpenDoorButton()
+{
+    TRISB |= 0x08;
+
+    if(!(PORTB & 0x08) && oldRB3)
+    {
+        oldRB3 = 0;
+        if(doorOpen)
+        {
+            doorOpen = 0;
+        }
+        else doorOpen = 1;
+    }
+    if((PORTB & 0x08) && !oldRB3)
+    {
+        __delay_ms(10);
+        if((PORTB & 0x08) && !oldRB3) oldRB3 = 1;
+    }
+    if(!oldDoorOpen && doorOpen)
+    {
+        MotorRotation(CLOCKWISE_ROTATION, 25);
+        oldDoorOpen = 1;
+    }
+    if(oldDoorOpen && !doorOpen)
+    {
+        MotorRotation(COUNTER_CLOCKWISE_ROTATION, 25);
+        oldDoorOpen = 0;
+    }
+}
+
 void DriveMotor(char direction)
 {
-    if (direction == 0x00)
+    if (direction == CLOCKWISE_ROTATION)
     {
         for (char i = 0; i<5; i++)
         {
@@ -201,7 +241,7 @@ void DriveMotor(char direction)
             __delay_ms(10);
         }
     }
-    if (direction == 0x01)
+    if (direction == COUNTER_CLOCKWISE_ROTATION)
     {
         for (char i = 0; i<5; i++)
         {
@@ -280,7 +320,7 @@ void ManageDisplays()
 
 void MotorRotation(char direction, char amplitude)
 {
-    TRISD = 0b0000000; // PORT D as output port
+    TRISD &= 0b00001111;    
     for(char i = 0; i<amplitude; i++)
     {
         DriveMotor(direction);
