@@ -5957,11 +5957,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Francesco Sartori\\source\\repos\\ITS.PW_ANNO2.GRUPPO4\\CLOUD\\ITS.PW_ANNO2.GRUPPO4.Dashboard\\ITS.PW_ANNO2.GRUPPO4.Dashboard.csproj",
+      "projectUniqueName": "C:\\Users\\Francesco Sartori\\source\\repos\\ITS_REGIONALI_VELOCI\\CLOUD\\ITS.PW_ANNO2.GRUPPO4.Dashboard\\ITS.PW_ANNO2.GRUPPO4.Dashboard.csproj",
       "projectName": "ITS.PW_ANNO2.GRUPPO4.Dashboard",
-      "projectPath": "C:\\Users\\Francesco Sartori\\source\\repos\\ITS.PW_ANNO2.GRUPPO4\\CLOUD\\ITS.PW_ANNO2.GRUPPO4.Dashboard\\ITS.PW_ANNO2.GRUPPO4.Dashboard.csproj",
+      "projectPath": "C:\\Users\\Francesco Sartori\\source\\repos\\ITS_REGIONALI_VELOCI\\CLOUD\\ITS.PW_ANNO2.GRUPPO4.Dashboard\\ITS.PW_ANNO2.GRUPPO4.Dashboard.csproj",
       "packagesPath": "C:\\Users\\Francesco Sartori\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Francesco Sartori\\source\\repos\\ITS.PW_ANNO2.GRUPPO4\\CLOUD\\ITS.PW_ANNO2.GRUPPO4.Dashboard\\obj\\",
+      "outputPath": "C:\\Users\\Francesco Sartori\\source\\repos\\ITS_REGIONALI_VELOCI\\CLOUD\\ITS.PW_ANNO2.GRUPPO4.Dashboard\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Francesco Sartori\\AppData\\Roaming\\NuGet\\NuGet.Config",

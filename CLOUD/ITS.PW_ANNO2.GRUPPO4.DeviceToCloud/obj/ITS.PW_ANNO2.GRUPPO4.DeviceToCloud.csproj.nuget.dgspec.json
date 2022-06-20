@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Francesco Sartori\\source\\repos\\ITS.PW_ANNO2.GRUPPO4\\CLOUD\\ITS.PW_ANNO2.GRUPPO4.DeviceToCloud\\ITS.PW_ANNO2.GRUPPO4.DeviceToCloud.csproj": {}
+    "C:\\Users\\Francesco Sartori\\source\\repos\\ITS_REGIONALI_VELOCI\\CLOUD\\ITS.PW_ANNO2.GRUPPO4.DeviceToCloud\\ITS.PW_ANNO2.GRUPPO4.DeviceToCloud.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Francesco Sartori\\source\\repos\\ITS.PW_ANNO2.GRUPPO4\\CLOUD\\ITS.PW_ANNO2.GRUPPO4.DeviceToCloud\\ITS.PW_ANNO2.GRUPPO4.DeviceToCloud.csproj": {
+    "C:\\Users\\Francesco Sartori\\source\\repos\\ITS_REGIONALI_VELOCI\\CLOUD\\ITS.PW_ANNO2.GRUPPO4.DeviceToCloud\\ITS.PW_ANNO2.GRUPPO4.DeviceToCloud.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Francesco Sartori\\source\\repos\\ITS.PW_ANNO2.GRUPPO4\\CLOUD\\ITS.PW_ANNO2.GRUPPO4.DeviceToCloud\\ITS.PW_ANNO2.GRUPPO4.DeviceToCloud.csproj",
+        "projectUniqueName": "C:\\Users\\Francesco Sartori\\source\\repos\\ITS_REGIONALI_VELOCI\\CLOUD\\ITS.PW_ANNO2.GRUPPO4.DeviceToCloud\\ITS.PW_ANNO2.GRUPPO4.DeviceToCloud.csproj",
         "projectName": "ITS.PW_ANNO2.GRUPPO4.DeviceToCloud",
-        "projectPath": "C:\\Users\\Francesco Sartori\\source\\repos\\ITS.PW_ANNO2.GRUPPO4\\CLOUD\\ITS.PW_ANNO2.GRUPPO4.DeviceToCloud\\ITS.PW_ANNO2.GRUPPO4.DeviceToCloud.csproj",
+        "projectPath": "C:\\Users\\Francesco Sartori\\source\\repos\\ITS_REGIONALI_VELOCI\\CLOUD\\ITS.PW_ANNO2.GRUPPO4.DeviceToCloud\\ITS.PW_ANNO2.GRUPPO4.DeviceToCloud.csproj",
         "packagesPath": "C:\\Users\\Francesco Sartori\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Francesco Sartori\\source\\repos\\ITS.PW_ANNO2.GRUPPO4\\CLOUD\\ITS.PW_ANNO2.GRUPPO4.DeviceToCloud\\obj\\",
+        "outputPath": "C:\\Users\\Francesco Sartori\\source\\repos\\ITS_REGIONALI_VELOCI\\CLOUD\\ITS.PW_ANNO2.GRUPPO4.DeviceToCloud\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Francesco Sartori\\AppData\\Roaming\\NuGet\\NuGet.Config",

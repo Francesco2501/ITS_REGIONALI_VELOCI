@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "2bc8EQlMY0TeN/jyBHreGEL6umtYyMp5lVTp+lkEdauwmRT5PN0zxtMNsVCCnNP3waLCp7TdBGNfy1bYm//+EQ==",
+  "dgSpecHash": "7VpItSPxEy4FTWiUSqGHnVXkJyWq6aTKVm4f3Lvq4/szpNGcpGiXcGFuMYp6lgNpJGGTr0Ufzpu8Gf54EA948w==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Francesco Sartori\\source\\repos\\ITS.PW_ANNO2.GRUPPO4\\CLOUD\\ITS.PW_ANNO2.GRUPPO4.Dashboard\\ITS.PW_ANNO2.GRUPPO4.Dashboard.csproj",
+  "projectFilePath": "C:\\Users\\Francesco Sartori\\source\\repos\\ITS_REGIONALI_VELOCI\\CLOUD\\ITS.PW_ANNO2.GRUPPO4.Dashboard\\ITS.PW_ANNO2.GRUPPO4.Dashboard.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Francesco Sartori\\.nuget\\packages\\humanizer.core\\2.8.26\\humanizer.core.2.8.26.nupkg.sha512",
     "C:\\Users\\Francesco Sartori\\.nuget\\packages\\microsoft.aspnetcore.cryptography.internal\\5.0.17\\microsoft.aspnetcore.cryptography.internal.5.0.17.nupkg.sha512",

@@ -4,7 +4,68 @@
     ViewData["Title"] = "Home page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container">
+    @*<h1 class="display-4">Welcome</h1>*@
+    @*<p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>*@
+    <div class="float-lg-left">
+        <select name="train">
+            <option value="">Select a train</option>
+            <option value="1">One</option>
+            <option value="2">Two</option>
+            <option value="3">Three</option>
+        </select>
+        <br />
+        <br />
+        <select name="carriage">
+            <option value="">Select a carriage</option>
+            <option value="1">One</option>
+            <option value="2">Two</option>
+            <option value="3">Three</option>
+        </select>
+        <br />
+        <br />
+
+        <h4>Status</h4>
+        <h7>Temperature</h7>
+        <input class="text-center" value=None />
+        <br />
+        <br />
+
+        <h7>Humidity</h7>
+        <input class="text-center" value=None />
+        <br />
+        <br />
+
+        <h7>Bathdoor</h7>
+        <input class="text-center" value=None />
+        <button class="btn">Open</button>
+        <button class="btn">Close</button>
+        <br />
+        <br />
+
+        <h7>Door1</h7>
+        <input class="text-center" value=None />
+        <button class="btn">Open</button>
+        <button class="btn">Close</button>
+        <br />
+        <br />
+        
+        <h7>Door2</h7>
+        <input class="text-center" value=None />
+        <button class="btn">Open</button>
+        <button class="btn">Close</button>
+        <br />
+        <br />
+
+        <h4>Control Dashboard</h4>
+        <h7>Select temperature (default: 25°C)</h7>
+        
+        <br />
+        <br />
+        <button class="btn btn-primary">Up</button>
+        <input class="text-center" value=25 />
+        <button class="btn btn-primary">Down</button>
+  
+    </div>  
+    
 </div>

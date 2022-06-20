@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "j1iAxmyLvTGYuPES/NSIFhHU0BqnPaRWdZ0cbZ62To1eiwmBICKMsVdrVI4PtG7gPl9BgOXNLimX5xK2BM/MQA==",
+  "dgSpecHash": "HteFiDfdnpYnrmWmfL3AhV4pQVBWFkGrh5Qeof229L4QQNf5yzns/QysVfMLkQecwQ7NVdwW/Jgta/KkFdH5KA==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Francesco Sartori\\source\\repos\\ITS.PW_ANNO2.GRUPPO4\\CLOUD\\ITS.PW_ANNO2.GRUPPO4.DeviceToCloud\\ITS.PW_ANNO2.GRUPPO4.DeviceToCloud.csproj",
+  "projectFilePath": "C:\\Users\\Francesco Sartori\\source\\repos\\ITS_REGIONALI_VELOCI\\CLOUD\\ITS.PW_ANNO2.GRUPPO4.DeviceToCloud\\ITS.PW_ANNO2.GRUPPO4.DeviceToCloud.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Francesco Sartori\\.nuget\\packages\\azure.core\\1.9.0\\azure.core.1.9.0.nupkg.sha512",
     "C:\\Users\\Francesco Sartori\\.nuget\\packages\\microsoft.azure.amqp\\2.4.7\\microsoft.azure.amqp.2.4.7.nupkg.sha512",
