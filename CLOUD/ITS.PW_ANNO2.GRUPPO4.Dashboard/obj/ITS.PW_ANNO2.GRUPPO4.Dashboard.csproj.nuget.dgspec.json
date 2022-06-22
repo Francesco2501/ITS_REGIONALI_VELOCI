@@ -44,6 +44,10 @@
               "target": "Package",
               "version": "[5.0.17, )"
             },
+            "Microsoft.Azure.Cosmos": {
+              "target": "Package",
+              "version": "[3.28.0, )"
+            },
             "Microsoft.EntityFrameworkCore.SqlServer": {
               "target": "Package",
               "version": "[5.0.17, )"
@@ -53,6 +57,10 @@
               "suppressParent": "All",
               "target": "Package",
               "version": "[5.0.17, )"
+            },
+            "Swashbuckle.AspNetCore": {
+              "target": "Package",
+              "version": "[6.3.1, )"
             }
           },
           "imports": [
