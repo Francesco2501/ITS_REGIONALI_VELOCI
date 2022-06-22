@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32421.90
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IotTrainTrigger", "IotTrainTrigger\IotTrainTrigger.csproj", "{0AEF748E-93CE-4FD7-9160-5F957A0FF86C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0AEF748E-93CE-4FD7-9160-5F957A0FF86C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0AEF748E-93CE-4FD7-9160-5F957A0FF86C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0AEF748E-93CE-4FD7-9160-5F957A0FF86C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0AEF748E-93CE-4FD7-9160-5F957A0FF86C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0037EF66-685C-48BC-A655-D6D644019467}
+	EndGlobalSection
+EndGlobal
