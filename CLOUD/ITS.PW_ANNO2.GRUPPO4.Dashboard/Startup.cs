@@ -12,6 +12,7 @@ using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace ITS.PW_ANNO2.GRUPPO4.Dashboard
@@ -41,6 +42,7 @@ namespace ITS.PW_ANNO2.GRUPPO4.Dashboard
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "ITS-Train", Version = "v1" });
             });
             services.AddSingleton<ICosmosDbService>(InitializeCosmosClientInstanceAsync(Configuration.GetSection("CosmosDb")).GetAwaiter().GetResult());
+            services.AddSingleton<HttpClient>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

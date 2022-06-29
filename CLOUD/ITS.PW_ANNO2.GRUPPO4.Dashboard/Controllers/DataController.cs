@@ -21,7 +21,7 @@ namespace ITS.PW_ANNO2.GRUPPO4.Dashboard.Controllers
         [HttpGet]
         public async Task<IActionResult> List()
         {
-            return Ok(await _cosmosDbService.GetMultipleAsync("SELECT * FROM c"));
+            return Ok(await _cosmosDbService.GetMultipleAsync("SELECT top 1 * FROM c order by c._ts desc"));
         }
 
         // GET api/items/5
