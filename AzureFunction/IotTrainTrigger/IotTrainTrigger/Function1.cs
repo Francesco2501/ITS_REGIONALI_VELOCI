@@ -13,7 +13,7 @@ namespace IotTrainTrigger
 {
     public class DataGruppo4
     {
-
+        public DateTime ts { get; set; }
         public int ntrain { get; set; }
         public int ncarriage { get; set; }
         public int? temp { get; set; }
@@ -22,7 +22,7 @@ namespace IotTrainTrigger
         public Boolean? alarm { get; set; }
         public Boolean? carriagedoor1 { get; set; }
         public Boolean? carriagedoor2 { get; set; }
-        //public DateTime savetime { get; set; }
+        
     }
     public static class Function1
     {
@@ -41,7 +41,7 @@ namespace IotTrainTrigger
             object dataTrain = data;
 
             if (data.temp != null && data.humidity != null && data.bathdoor != null && data.alarm != null && data.carriagedoor1 != null && data.carriagedoor2 != null)
-                dataTrain = new { data.ntrain, data.ncarriage, data.temp, data.humidity, data.bathdoor, data.alarm, data.carriagedoor1, data.carriagedoor2 };
+                dataTrain = new { data.ts, data.ntrain, data.ncarriage, data.temp, data.humidity, data.bathdoor, data.alarm, data.carriagedoor1, data.carriagedoor2 };
             else if (data.bathdoor != null)
                 dataTrain = new { data.ntrain, data.ncarriage, data.bathdoor };
             else if (data.alarm != null)
