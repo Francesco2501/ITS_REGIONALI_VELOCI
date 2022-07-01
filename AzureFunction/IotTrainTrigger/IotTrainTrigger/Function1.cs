@@ -13,11 +13,13 @@ namespace IotTrainTrigger
 {
     public class DataGruppo4
     {
-        public DateTime ts { get; set; }
+        public long ts { get; set; }
         public int ntrain { get; set; }
         public int ncarriage { get; set; }
-        public int? temp { get; set; }
-        public int? humidity { get; set; }
+
+        public Double? settemperature { get; set; }
+        public Double? temp { get; set; }
+        public Double? humidity { get; set; }
         public Boolean? bathdoor { get; set; }
         public Boolean? alarm { get; set; }
         public Boolean? carriagedoor1 { get; set; }
@@ -40,16 +42,16 @@ namespace IotTrainTrigger
             var data = JsonSerializer.Deserialize<DataGruppo4>(Encoding.UTF8.GetString(message.Body));
             object dataTrain = data;
 
-            if (data.temp != null && data.humidity != null && data.bathdoor != null && data.alarm != null && data.carriagedoor1 != null && data.carriagedoor2 != null)
-                dataTrain = new { data.ts, data.ntrain, data.ncarriage, data.temp, data.humidity, data.bathdoor, data.alarm, data.carriagedoor1, data.carriagedoor2 };
-            else if (data.bathdoor != null)
-                dataTrain = new { data.ntrain, data.ncarriage, data.bathdoor };
-            else if (data.alarm != null)
-                dataTrain = new { data.ntrain, data.ncarriage, data.alarm };
-            else if (data.carriagedoor1 != null)
-                dataTrain = new { data.ntrain, data.ncarriage, data.carriagedoor1 };
-            else if (data.carriagedoor2 != null)
-                dataTrain = new { data.ntrain, data.ncarriage, data.carriagedoor2 };
+            //if (data.temp != null && data.humidity != null && data.bathdoor != null && data.alarm != null && data.carriagedoor1 != null && data.carriagedoor2 != null)
+            dataTrain = new { data.ts, data.settemperature, data.ntrain, data.ncarriage, data.temp, data.humidity, data.bathdoor, data.alarm, data.carriagedoor1, data.carriagedoor2 };
+            //if (data.bathdoor != null)
+            //    dataTrain = new { data.ntrain, data.ncarriage, data.bathdoor };
+            //else if (data.alarm != null)
+            //    dataTrain = new { data.ntrain, data.ncarriage, data.alarm };
+            //else if (data.carriagedoor1 != null)
+            //    dataTrain = new { data.ntrain, data.ncarriage, data.carriagedoor1 };
+            //else if (data.carriagedoor2 != null)
+            //    dataTrain = new { data.ntrain, data.ncarriage, data.carriagedoor2 };
 
             document = dataTrain;
 
