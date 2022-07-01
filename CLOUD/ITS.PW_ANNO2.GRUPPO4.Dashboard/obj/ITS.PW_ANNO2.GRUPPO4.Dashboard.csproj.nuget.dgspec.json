@@ -48,6 +48,10 @@
               "target": "Package",
               "version": "[3.28.0, )"
             },
+            "Microsoft.Azure.Devices": {
+              "target": "Package",
+              "version": "[1.36.0, )"
+            },
             "Microsoft.EntityFrameworkCore.SqlServer": {
               "target": "Package",
               "version": "[5.0.17, )"

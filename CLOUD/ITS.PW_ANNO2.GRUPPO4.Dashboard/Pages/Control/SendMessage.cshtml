@@ -1,0 +1,64 @@
+﻿@page
+@model ITS.PW_ANNO2.GRUPPO4.Dashboard.Pages.Control.SendMessageModel
+@{
+}
+<div class="container">
+    
+    <div class="float-lg-left">
+        <form method="post" id="senddata" >
+            <select id="sel-train" name="ntrain">
+                <option value="">Select a train</option>
+                <option value="1">One</option>
+                <option value="2">Two</option>
+                <option value="3">Three</option>
+            </select>
+            <br />
+            <br />
+            <select id="sel-carriage" name="ncarriage">
+                <option value="">Select a carriage</option>
+                <option value="1">One</option>
+                <option value="2">Two</option>
+                <option value="3">Three</option>
+            </select>
+            <br />
+            <br />
+            
+            <input type="checkbox" id="alarm" name="alarm" value="1">
+            <label for="alarm">Allarme!</label><br>
+
+            <button type="submit" value="Submit" asp-page-handler="Alarm">Send data</button>
+
+        </form>
+        <form method="post">
+            <select id="sel-train" name="ntrain">
+                <option value="">Select a train</option>
+                <option value="1">One</option>
+                <option value="2">Two</option>
+                <option value="3">Three</option>
+            </select>
+            <br />
+            <br />
+            <select id="sel-carriage" name="ncarriage">
+                <option value="">Select a carriage</option>
+                <option value="1">One</option>
+                <option value="2">Two</option>
+                <option value="3">Three</option>
+            </select>
+            <br />
+            <br />
+
+            <h4>Control Dashboard</h4>
+            <h7>Select temperature (default: 25°C)</h7>
+        
+            <br />
+            <br />
+            
+            <input class="text-center" value=25 name="temp-value"/>
+
+            <button type="submit" value="Submit" asp-page-handler="Temp">Send data</button>
+        </form>
+        
+        
+          
+    </div>  
+</div>

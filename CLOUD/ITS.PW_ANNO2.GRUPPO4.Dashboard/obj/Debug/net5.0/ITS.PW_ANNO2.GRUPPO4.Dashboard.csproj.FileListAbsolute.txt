@@ -252,3 +252,8 @@ C:\Users\Francesco Sartori\source\repos\ITS_REGIONALI_VELOCI\CLOUD\ITS.PW_ANNO2.
 C:\Users\Francesco Sartori\source\repos\ITS_REGIONALI_VELOCI\CLOUD\ITS.PW_ANNO2.GRUPPO4.Dashboard\bin\Debug\net5.0\Swashbuckle.AspNetCore.SwaggerGen.dll
 C:\Users\Francesco Sartori\source\repos\ITS_REGIONALI_VELOCI\CLOUD\ITS.PW_ANNO2.GRUPPO4.Dashboard\bin\Debug\net5.0\Swashbuckle.AspNetCore.SwaggerUI.dll
 C:\Users\Francesco Sartori\source\repos\ITS_REGIONALI_VELOCI\CLOUD\ITS.PW_ANNO2.GRUPPO4.Dashboard\obj\Debug\net5.0\ITS.PW_ANNO2.GRUPPO4.Dashboard.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\Francesco Sartori\source\repos\ITS_REGIONALI_VELOCI\CLOUD\ITS.PW_ANNO2.GRUPPO4.Dashboard\obj\Debug\net5.0\Razor\Pages\Control\SendMessage.cshtml.g.cs
+C:\Users\Francesco Sartori\source\repos\ITS_REGIONALI_VELOCI\CLOUD\ITS.PW_ANNO2.GRUPPO4.Dashboard\bin\Debug\net5.0\Microsoft.Azure.Amqp.dll
+C:\Users\Francesco Sartori\source\repos\ITS_REGIONALI_VELOCI\CLOUD\ITS.PW_ANNO2.GRUPPO4.Dashboard\bin\Debug\net5.0\Microsoft.Azure.Devices.dll
+C:\Users\Francesco Sartori\source\repos\ITS_REGIONALI_VELOCI\CLOUD\ITS.PW_ANNO2.GRUPPO4.Dashboard\bin\Debug\net5.0\Microsoft.Azure.Devices.Shared.dll
+C:\Users\Francesco Sartori\source\repos\ITS_REGIONALI_VELOCI\CLOUD\ITS.PW_ANNO2.GRUPPO4.Dashboard\bin\Debug\net5.0\Microsoft.Rest.ClientRuntime.dll

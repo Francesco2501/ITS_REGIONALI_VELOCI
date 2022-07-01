@@ -11,6 +11,7 @@
 using System;
 using System.Reflection;
 
+[assembly: Microsoft.Extensions.Configuration.UserSecrets.UserSecretsIdAttribute("d01eeb5a-c5cb-4964-87b3-43509a64061c")]
 [assembly: System.Reflection.AssemblyCompanyAttribute("ITS.PW_ANNO2.GRUPPO4.Dashboard")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]

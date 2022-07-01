@@ -12,9 +12,9 @@ namespace ITS.PW_ANNO2.GRUPPO4.Dashboard.Models
         [JsonProperty(PropertyName = "ncarriage")]
         public int Ncarriage { get; set; }
         [JsonProperty(PropertyName = "temp")]
-        public int? Temp { get; set; }
+        public Double? Temp { get; set; }
         [JsonProperty(PropertyName = "humidity")]
-        public int? Humidity { get; set; }
+        public Double? Humidity { get; set; }
         [JsonProperty(PropertyName = "bathdoor")]
         public Boolean? Bathdoor { get; set; }
         [JsonProperty(PropertyName = "alarm")]
@@ -24,6 +24,6 @@ namespace ITS.PW_ANNO2.GRUPPO4.Dashboard.Models
         [JsonProperty(PropertyName = "carriagedoor2")]
         public Boolean? Carriagedoor2 { get; set; }
         [JsonProperty(PropertyName = "ts")]
-        public DateTime Savetime { get; set; }
+        public long Savetime { get; set; }
     }
 }

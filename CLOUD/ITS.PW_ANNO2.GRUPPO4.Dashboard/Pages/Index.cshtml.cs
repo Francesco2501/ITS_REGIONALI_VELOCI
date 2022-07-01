@@ -22,5 +22,10 @@ namespace ITS.PW_ANNO2.GRUPPO4.Dashboard.Pages
         {
             _logger = logger;
         }
+
+        public IActionResult OnPost() {
+            return RedirectToPage("/Index");
+        }
+
     }
 }
