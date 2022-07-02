@@ -5,21 +5,13 @@
     ViewData["Title"] = "Home page";
 }
 <div class="main">
-    @*<p>@Model.Temp</p>*@
+    
 </div>
 @section Scripts {
-    
-
 	<script type="text/javascript">
         var tarr = [];
-        var idt = 0;
-        var idc = 0;
-        var idtemp = 0;
-        var idhum = 0;
-        var idbd = 0;
-        var idcr1 = 0;
-        var idcr2 = 0;
-        var idal = 0;
+        var idt, idc, idtemp, idhum, idbd, idcr1, idcr2, idal = 0;
+        //create complete card if train doesn't exist
         function createCard(idt, idc, idtemp, idhum, idbd, idcr1, idcr2, idal) {
             $('<div></div>').addClass("col-sm-2 col-md-4").attr("id", "crcol" + idt.toString() + idc.toString() ).appendTo('#rowtr' + idt.toString());
             $('<div></div>').addClass("card mb-2").attr("id", "crcard" + idt.toString() + idc.toString() ).appendTo('#crcol' + idt.toString() + idc.toString() );
@@ -29,30 +21,25 @@
             $('<div></div>').addClass("card-body").attr("id", "crcardbody" + idt.toString() + idc.toString() ).appendTo('#crcard' + idt.toString() + idc.toString() );
             $( "#crcardbody" + idt.toString() + idc.toString()).append( "<p id=" + "pbodyt" + idt.toString() + idc.toString() + " >" + "C°: " + idtemp + "</p>" );
             $( "#crcardbody" + idt.toString() + idc.toString()).append( "<p id=" + "pbodyh" + idt.toString() + idc.toString() + " >" + "%: " + idhum + "</p>" );
-            //$( "#crcardbody" + idt.toString() + idc.toString()).append( "<p id=" + "pbodybd" + idt.toString() + idc.toString() + " >" + "bathdoor: " + idbd + "</p>" );
-            //$( "#crcardbody" + idt.toString() + idc.toString()).append( "<p id=" + "pbodycr1" + idt.toString() + idc.toString() + " >" + "carriagedoor1: " + idcr1 + "</p>" );
-            //$( "#crcardbody" + idt.toString() + idc.toString()).append( "<p id=" + "pbodycr2" + idt.toString() + idc.toString() + " >" + "carriagedoor2: " + idcr2 + "</p>" );
-            //$( "#crcardbody" + idt.toString() + idc.toString()).append( "<p id=" + "pbodyal" + idt.toString() + idc.toString() + " >" + "al: " + idal + "</p>" );
-            $( "#crcardbody" + idt.toString() + idc.toString()).append( "<form " + "target=" + "_blank" + " action=" + "/Control/SendMessage" + " method=" + "post" + " id=" + "mpost" + idt.toString() + idc.toString() + ">" );
-            $( "#mpost" + idt.toString() + idc.toString()).append( "<input type=" + "hidden" + " id=" + "mbodyt" + idt.toString() + idc.toString() + " value=" + idt + ">" );     
-            $( "#mpost" + idt.toString() + idc.toString()).append( "<input type=" + "hidden" + " id=" + "mbodyh" + idt.toString() + idc.toString() + " value=" + idc + ">" );
-            $( "#mpost" + idt.toString() + idc.toString()).append( "<input type=" + "hidden" + " id=" + "mbodybd" + idt.toString() + idc.toString() + " value=" + idbd + ">" );
-            $( "#mpost" + idt.toString() + idc.toString()).append( "<input type=" + "hidden" + " id=" + "mbodycr1" + idt.toString() + idc.toString() + " value=" + idcr1 + ">" );
-            $( "#mpost" + idt.toString() + idc.toString()).append( "<input type=" + "hidden" + " id=" + "mbodycr2" + idt.toString() + idc.toString() + " value=" + idcr2 + ">" );
-            $( "#mpost" + idt.toString() + idc.toString()).append( "<input type=" + "hidden" + " id=" + "mbodyal" + idt.toString() + idc.toString() + " value=" + idal + ">" );
+            $( "#crcardbody" + idt.toString() + idc.toString()).append( "<p style=" + "display:" + "none;" + " id=" + "pbodybd" + idt.toString() + idc.toString() + " >" + "bathdoor: " + idbd + "</p>" );
+            $( "#crcardbody" + idt.toString() + idc.toString()).append( "<p style=" + "display:" + "none;" + " id=" + "pbodycr1" + idt.toString() + idc.toString() + " >" + "carriagedoor1: " + idcr1 + "</p>" );
+            $( "#crcardbody" + idt.toString() + idc.toString()).append( "<p style=" + "display:" + "none;" + " id=" + "pbodycr2" + idt.toString() + idc.toString() + " >" + "carriagedoor2: " + idcr2 + "</p>" );
+            $( "#crcardbody" + idt.toString() + idc.toString()).append( "<p style=" + "display:" + "none;" + " id=" + "pbodyal" + idt.toString() + idc.toString() + " >" + "alarm: " + idal + "</p>" );
             
-            
-            $("<button type=" + "submit" + " form=" + "mpost" + idt.toString() + idc.toString() + " value=" + "Submit" + ">Vai al dettaglio</button>").addClass("btn btn-warning").attr("id", "btn" + idt.toString() + idc.toString()).appendTo("#crcardbody" + idt.toString() + idc.toString());
-            //$("<a>Vai al dettaglio</a>").addClass("btn btn-warning").attr("id", "a" + idt.toString() + idc.toString()).appendTo("#crcardbody" + idt.toString() + idc.toString());
-            //$("#btn" + idt.toString() + idc.toString()).on("click", function(){ NewTab(); });
+            $("<button>Vai al dettaglio</button>").addClass("btn btn-warning").attr("id", "show" + idt.toString() + idc.toString()).appendTo("#crcardbody" + idt.toString() + idc.toString());
+            $("#show" + idt.toString() + idc.toString()).on("click", function(){ Showp(idt, idc); });            
         }
-        function NewTab() {
-            window.open("/Control/SendMessage");
+        //show detail on card
+        function Showp(idt, idc) {            
+            $("#pbodybd" + idt.toString() + idc.toString()).show();
+            $("#pbodycr1" + idt.toString() + idc.toString()).show();
+            $("#pbodycr2" + idt.toString() + idc.toString()).show();
+            $("#pbodyal" + idt.toString() + idc.toString()).show();            
         }
         $(document).ready(function(){            
             setInterval(function(){
                 $.get("https://localhost:44358/api/Data", function(data, status) {
-                    
+                    //assign json train variable
                     idt = data[0].ntrain;
                     idc = data[0].ncarriage;
                     idtemp = data[0].temp;
@@ -61,6 +48,7 @@
                     idcr1 = data[0].carriagedoor1;
                     idcr2 = data[0].carriagedoor2;
                     idal = data[0].alarm;
+                    //if train don't exist
                     if(!tarr.includes(data[0].ntrain)) {
                             
                         tarr.push(data[0].ntrain)
@@ -68,6 +56,7 @@
                         $('<div></div>').addClass("row").attr("id", "rowtr" + idt.toString() ).appendTo('.main');
                         createCard(idt, idc, idtemp, idhum, idbd, idcr1, idcr2, idal);                      
                     }
+                    //update information
                     else if(tarr.includes(data[0].ntrain) && !!document.getElementById("crcol" + (data[0].ntrain).toString() + (data[0].ncarriage).toString())) {
                             
                         $( "#pheadert" + idt.toString() + idc.toString()).replaceWith( "<p id=" + "pheadert" + idt.toString() + idc.toString() + ">" + "Treno: " + data[0].ntrain + "</p>" );
@@ -75,19 +64,16 @@
 
                         $( "#pbodyt" + idt.toString() + idc.toString()).replaceWith( "<p id=" + "pbodyt" + idt.toString() + idc.toString() + ">" + "C°: " + idtemp + "</p>" );
                         $( "#pbodyh" + idt.toString() + idc.toString()).replaceWith( "<p id=" + "pbodyh" + idt.toString() + idc.toString() + ">" + "%: " + idhum + "</p>" );
-                        $( "#mbodyt" + idt.toString() + idc.toString()).replaceWith( "<input type=" + "hidden" + " id=" + "mbodyt" + idt.toString() + idc.toString() + " value=" + idtemp + ">" );     
-                        $( "#mbodyh" + idt.toString() + idc.toString()).replaceWith( "<input type=" + "hidden" + " id=" + "mbodyh" + idt.toString() + idc.toString() + " value=" + idhum + ">" );
-                        $( "#mbodybd" + idt.toString() + idc.toString()).replaceWith( "<input type=" + "hidden" + " id=" + "mbodybd" + idt.toString() + idc.toString() + " value=" + idbd + ">" );
-                        $( "#mbodycr1" + idt.toString() + idc.toString()).replaceWith( "<input type=" + "hidden" + " id=" + "mbodycr1" + idt.toString() + idc.toString() + " value=" + idcr1 + ">" );
-                        $( "#mbodycr2" + idt.toString() + idc.toString()).replaceWith( "<input type=" + "hidden" + " id=" + "mbodycr2" + idt.toString() + idc.toString() + " value=" + idcr2 + ">" );
-                        $( "#mbodyal" + idt.toString() + idc.toString()).replaceWith( "<input type=" + "hidden" + " id=" + "mbodyal" + idt.toString() + idc.toString() + " value=" + idal + ">" );
+                        $( "#pbodybd" + idt.toString() + idc.toString()).replaceWith( "<p style=" + "display:" + "none;" + " id=" + "pbodybd" + idt.toString() + idc.toString() + " >" + "bathdoor: " + idbd + "</p>" );
+                        $( "#pbodycr1" + idt.toString() + idc.toString()).replaceWith( "<p style=" + "display:" + "none;" + " id=" + "pbodycr1" + idt.toString() + idc.toString() + " >" + "carriagedoor1: " + idcr1 + "</p>" );
+                        $( "#pbodycr2" + idt.toString() + idc.toString()).replaceWith( "<p style=" + "display:" + "none;" + " id=" + "pbodycr2" + idt.toString() + idc.toString() + " >" + "carriagedoor2: " + idcr2 + "</p>" );
+                        $( "#pbodyal" + idt.toString() + idc.toString()).replaceWith( "<p style=" + "display:" + "none;" + " id=" + "pbodyal" + idt.toString() + idc.toString() + " >" + "alarm: " + idal + "</p>" );                        
                     }
                     else {                            
                         createCard(idt, idc, idtemp, idhum, idbd, idcr1, idcr2, idal);                         
                     }
                 });
-            }, 5000);
-             
+            }, 5000);             
         });
     </script>
 }
