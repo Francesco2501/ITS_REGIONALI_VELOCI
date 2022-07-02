@@ -24,12 +24,14 @@ namespace ITS.PW_ANNO2.GRUPPO4.Dashboard.Pages.Control
         public void OnPostTemp()
         {
             string deviceId = "raspberrydevice";
-            var nt = Convert.ToInt16(Request.Form["ntrain"]);
-            var nc = Convert.ToInt16(Request.Form["ncarriage"]);
-            
+            var nt = Convert.ToInt16(Request.Form["nttrain"]);
+            var nc = Convert.ToInt16(Request.Form["ntcarriage"]);
+            var tempc = 0;
+            if (nc != 0) { tempc = nc; }
+
             var settemperature = Convert.ToDouble(Request.Form["temp-value"]);
             
-            var obj = new { ntrain = nt,  ncarriage = nc, settemperature = settemperature};
+            var obj = new { ntrain = nt,  ncarriage = tempc, settemperature = settemperature};
             string jsonString = JsonSerializer.Serialize(obj);           
 
             var commandMessage = new Message(Encoding.UTF8.GetBytes(jsonString));
@@ -41,13 +43,15 @@ namespace ITS.PW_ANNO2.GRUPPO4.Dashboard.Pages.Control
             string deviceId = "raspberrydevice";
             var nt = Convert.ToInt16(Request.Form["ntrain"]);
             var nc = Convert.ToInt16(Request.Form["ncarriage"]);
+            var alarmc = 0;
+            if (nc != 0) { alarmc = nc; }
 
             var al = Convert.ToInt16(Request.Form["alarm"]);
             var alarm = false;
             if (al == 1) { alarm = true; }
             
 
-            var obj = new { ntrain = nt, ncarriage = nc, alarm = alarm };
+            var obj = new { ntrain = nt, ncarriage = alarmc, alarm = alarm };
             string jsonString = JsonSerializer.Serialize(obj);
 
             var commandMessage = new Message(Encoding.UTF8.GetBytes(jsonString));
