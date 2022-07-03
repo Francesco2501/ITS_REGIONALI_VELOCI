@@ -3,6 +3,8 @@
 [d edition pro ]
 [d chip 16F877A ]
 [d frameptr 0 ]
+"5 C:\Program Files\Microchip\xc8\v2.32\pic\sources\c90\common\aldiv.c
+[v ___aldiv __aldiv `(l  1 e 4 0 ]
 "4 C:\Program Files\Microchip\xc8\v2.32\pic\sources\c90\common\flge.c
 [v ___flge __flge `(b  1 e 0 0 ]
 "43 C:\Program Files\Microchip\xc8\v2.32\pic\sources\c90\common\fltol.c
@@ -25,48 +27,70 @@
 [v ___eecpymem __eecpymem `(v  1 e 1 0 ]
 "39
 [v ___memcpyee __memcpyee `(v  1 e 1 0 ]
-"125 C:\Users\rconte\Desktop\PW\ITS_REGIONALI_VELOCI\EMBEDDED\ProjectWorkPIC.X\main.c
+"175 C:\Users\rconte\Desktop\PW\ITS_REGIONALI_VELOCI\EMBEDDED\ProjectWorkPIC.X\main.c
 [v _main main `(i  1 e 2 0 ]
-"164
+"203
 [v _ISR ISR `II(v  1 e 1 0 ]
-"182
+"235
 [v _CheckAlarmButton CheckAlarmButton `(v  1 e 1 0 ]
-"206
+"258
 [v _CheckKeypad CheckKeypad `(uc  1 e 1 0 ]
-"234
+"286
 [v _CheckOpenDoorButton CheckOpenDoorButton `(v  1 e 1 0 ]
-"263
+"315
 [v _DriveMotor DriveMotor `(v  1 e 1 0 ]
-"283
+"335
 [v _HandleKeypadReading HandleKeypadReading `(v  1 e 1 0 ]
-"310
+"371
 [v _InitADC InitADC `(v  1 e 1 0 ]
-"318
+"379
 [v _InitLCD InitLCD `(v  1 e 1 0 ]
-"336
+"397
 [v _InitPic InitPic `(v  1 e 1 0 ]
-"345
+"407
 [v _ManageDisplays ManageDisplays `(v  1 e 1 0 ]
-"358
+"420
 [v _ManageCooler ManageCooler `(v  1 e 1 0 ]
-"370
+"432
 [v _ManageHeater ManageHeater `(v  1 e 1 0 ]
-"382
+"444
+[v _ManageTemperature ManageTemperature `(v  1 e 1 0 ]
+"463
 [v _MotorRotation MotorRotation `(v  1 e 1 0 ]
-"391
+"472
 [v _ReadADC ReadADC `(i  1 e 2 0 ]
-"401
+"483
 [v _ReadHumidity ReadHumidity `(v  1 e 1 0 ]
-"411
+"494
 [v _ReadTemperature ReadTemperature `(v  1 e 1 0 ]
-"417
+"500
 [v _SendLCD SendLCD `(v  1 e 1 0 ]
-"431
+"514
 [v _SendLCDString SendLCDString `(v  1 e 1 0 ]
-"456
+"539
 [v _UpdateLCDViewWithNumber UpdateLCDViewWithNumber `(v  1 e 1 0 ]
-"478
+"561
 [v _UpdateTempHumDisplay UpdateTempHumDisplay `(v  1 e 1 0 ]
+"567
+[v _UART_Init UART_Init `(v  1 e 1 0 ]
+"580
+[v _UART_TxChar UART_TxChar `(v  1 e 1 0 ]
+"596
+[v _UART_TxTempHumDataPacket UART_TxTempHumDataPacket `(v  1 e 1 0 ]
+"620
+[v _UART_TxDesiredTempDataPacket UART_TxDesiredTempDataPacket `(v  1 e 1 0 ]
+"644
+[v _UART_TxBoolDataPacket UART_TxBoolDataPacket `(v  1 e 1 0 ]
+"668
+[v _PrepareTempHumDataPacket PrepareTempHumDataPacket `(v  1 e 1 0 ]
+"689
+[v _PrepareBoolDataPacket PrepareBoolDataPacket `(v  1 e 1 0 ]
+"698
+[v _PrepareDesiredTempDataPacket PrepareDesiredTempDataPacket `(v  1 e 1 0 ]
+"708
+[v _HandleRequest HandleRequest `(v  1 e 1 0 ]
+"750
+[v _ManageReceivedPacket ManageReceivedPacket `(v  1 e 1 0 ]
 "59 C:/Program Files/Microchip/MPLABX/v5.50/packs/Microchip/PIC16Fxxx_DFP/1.2.33/xc8\pic\include\proc\pic16f877a.h
 [v _TMR0 TMR0 `VEuc  1 e 1 @1 ]
 "216
@@ -79,6 +103,12 @@
 [v _PORTE PORTE `VEuc  1 e 1 @9 ]
 "454
 [v _INTCON INTCON `VEuc  1 e 1 @11 ]
+"964
+[v _RCSTA RCSTA `VEuc  1 e 1 @24 ]
+"1059
+[v _TXREG TXREG `VEuc  1 e 1 @25 ]
+"1066
+[v _RCREG RCREG `VEuc  1 e 1 @26 ]
 "1152
 [v _ADRESH ADRESH `VEuc  1 e 1 @30 ]
 "1159
@@ -95,177 +125,256 @@
 [v _TRISD TRISD `VEuc  1 e 1 @136 ]
 "1561
 [v _TRISE TRISE `VEuc  1 e 1 @137 ]
+"1618
+[v _PIE1 PIE1 `VEuc  1 e 1 @140 ]
+"1999
+[v _TXSTA TXSTA `VEuc  1 e 1 @152 ]
+"2080
+[v _SPBRG SPBRG `VEuc  1 e 1 @153 ]
 "2222
 [v _ADRESL ADRESL `VEuc  1 e 1 @158 ]
 "2229
 [v _ADCON1 ADCON1 `VEuc  1 e 1 @159 ]
-"50 C:\Users\rconte\Desktop\PW\ITS_REGIONALI_VELOCI\EMBEDDED\ProjectWorkPIC.X\main.c
+"2743
+[v _RCIF RCIF `VEb  1 e 0 @101 ]
+"3037
+[v _TXIF TXIF `VEb  1 e 0 @100 ]
+"61 C:\Users\rconte\Desktop\PW\ITS_REGIONALI_VELOCI\EMBEDDED\ProjectWorkPIC.X\main.c
+[v _flagsSerial flagsSerial `uc  1 e 1 0 ]
+"68
 [v _flags flags `uc  1 e 1 0 ]
-"53
-[v _colScan colScan `uc  1 e 1 0 ]
-"54
-[v _rowScan rowScan `uc  1 e 1 0 ]
-"55
-[v _dutyHeater dutyHeater `uc  1 e 1 0 ]
-"56
-[v _dutyCooler dutyCooler `uc  1 e 1 0 ]
-"57
-[v _counterAntibouncing counterAntibouncing `i  1 e 2 0 ]
-"61
-[v _keyValue keyValue `uc  1 e 1 0 ]
-"62
-[v _keypadReading keypadReading `uc  1 e 1 0 ]
-"63
-[v _dutyCounter dutyCounter `uc  1 e 1 0 ]
-"64
-[v _currentDisplay currentDisplay `uc  1 e 1 0 ]
-"65
-[v _oldDisplay oldDisplay `uc  1 e 1 0 ]
-"66
-[v _setTemp setTemp `f  1 e 4 0 ]
-"69
-[v _temperature temperature `f  1 e 4 0 ]
-"71
-[v _humidity humidity `f  1 e 4 0 ]
-"72
-[v _postScalerTemp postScalerTemp `i  1 e 2 0 ]
-"73
-[v _postScalerHum postScalerHum `i  1 e 2 0 ]
 "75
-[v _oldRB2 oldRB2 `uc  1 e 1 0 ]
+[v _colScan colScan `uc  1 e 1 0 ]
 "76
-[v _oldRB3 oldRB3 `uc  1 e 1 0 ]
+[v _rowScan rowScan `uc  1 e 1 0 ]
 "77
-[v _doorOpen doorOpen `uc  1 e 1 0 ]
+[v _dutyHeater dutyHeater `uc  1 e 1 0 ]
 "78
-[v _oldDoorOpen oldDoorOpen `uc  1 e 1 0 ]
-"80
-[v _colMask colMask `DC[3]uc  1 e 3 0 ]
+[v _dutyCooler dutyCooler `uc  1 e 1 0 ]
+"79
+[v _counterAntibouncing counterAntibouncing `i  1 e 2 0 ]
+"83
+[v _keyValue keyValue `uc  1 e 1 0 ]
+"84
+[v _keypadReading keypadReading `uc  1 e 1 0 ]
+"85
+[v _dutyCounter dutyCounter `uc  1 e 1 0 ]
 "86
-[v _rowMask rowMask `DC[4]uc  1 e 4 0 ]
+[v _currentDisplay currentDisplay `uc  1 e 1 0 ]
+"87
+[v _oldDisplay oldDisplay `uc  1 e 1 0 ]
+"88
+[v _setTemp setTemp `f  1 e 4 0 ]
+"91
+[v _temperature temperature `f  1 e 4 0 ]
 "93
-[v _clockWise clockWise `DC[5]uc  1 e 5 0 ]
+[v _humidity humidity `f  1 e 4 0 ]
 "94
-[v _counterClockWise counterClockWise `DC[5]uc  1 e 5 0 ]
+[v _postScalerTemp postScalerTemp `i  1 e 2 0 ]
 "95
-[v _keypad keypad `DC[12]uc  1 e 12 0 ]
+[v _postScalerHum postScalerHum `i  1 e 2 0 ]
+"96
+[v _oldRB2 oldRB2 `uc  1 e 1 0 ]
 "97
+[v _oldRB3 oldRB3 `uc  1 e 1 0 ]
+"98
+[v _doorOpen doorOpen `uc  1 e 1 0 ]
+"99
+[v _oldDoorOpen oldDoorOpen `uc  1 e 1 0 ]
+"101
+[v _colMask colMask `DC[3]uc  1 e 3 0 ]
+"107
+[v _rowMask rowMask `DC[4]uc  1 e 4 0 ]
+"114
+[v _clockWise clockWise `DC[5]uc  1 e 5 0 ]
+"115
+[v _counterClockWise counterClockWise `DC[5]uc  1 e 5 0 ]
+"116
+[v _keypad keypad `DC[12]uc  1 e 12 0 ]
+"118
 [v _displays displays `[4]*.24DCuc  1 e 4 0 ]
-"125
+"126
+[v _alarmOn alarmOn `uc  1 e 1 0 ]
+"127
+[v _txSuccess txSuccess `uc  1 e 1 0 ]
+"128
+[v _receivedData receivedData `uc  1 e 1 0 ]
+"129
+[v _txReceivedData txReceivedData `uc  1 e 1 0 ]
+"130
+[v _txAttempts txAttempts `uc  1 e 1 0 ]
+"131
+[v _transmittingData transmittingData `uc  1 e 1 0 ]
+"132
+[v _partCounter partCounter `uc  1 e 1 0 ]
+"133
+[v _i i `uc  1 e 1 0 ]
+"134
+[v _boolDataPacketTx boolDataPacketTx `[5]uc  1 e 5 0 ]
+"135
+[v _tempHumDataPacketTx tempHumDataPacketTx `[8]uc  1 e 8 0 ]
+"136
+[v _desiredTempPacketTx desiredTempPacketTx `[6]uc  1 e 6 0 ]
+"137
+[v _dataPacketRx dataPacketRx `[5]uc  1 e 5 0 ]
+"138
+[v _transmissionCounter transmissionCounter `ui  1 e 2 0 ]
+"139
+[v _retransmissionCounter retransmissionCounter `ui  1 e 2 0 ]
+"140
+[v _addressTransmissionCounter addressTransmissionCounter `ui  1 e 2 0 ]
+"175
 [v _main main `(i  1 e 2 0 ]
 {
-"162
+"201
 } 0
-"478
+"561
 [v _UpdateTempHumDisplay UpdateTempHumDisplay `(v  1 e 1 0 ]
 {
-"482
+"565
 } 0
-"411
+"567
+[v _UART_Init UART_Init `(v  1 e 1 0 ]
+{
+[v UART_Init@baudRate baudRate `ul  1 p 4 14 ]
+"578
+} 0
+"5 C:\Program Files\Microchip\xc8\v2.32\pic\sources\c90\common\aldiv.c
+[v ___aldiv __aldiv `(l  1 e 4 0 ]
+{
+"10
+[v ___aldiv@quotient quotient `l  1 a 4 10 ]
+"11
+[v ___aldiv@sign sign `uc  1 a 1 9 ]
+[v ___aldiv@counter counter `uc  1 a 1 8 ]
+"5
+[v ___aldiv@divisor divisor `l  1 p 4 0 ]
+[v ___aldiv@dividend dividend `l  1 p 4 4 ]
+"41
+} 0
+"494 C:\Users\rconte\Desktop\PW\ITS_REGIONALI_VELOCI\EMBEDDED\ProjectWorkPIC.X\main.c
 [v _ReadTemperature ReadTemperature `(v  1 e 1 0 ]
 {
-"414
+"497
 } 0
-"391
+"472
 [v _ReadADC ReadADC `(i  1 e 2 0 ]
 {
 [v ReadADC@channel channel `uc  1 a 1 wreg ]
 [v ReadADC@channel channel `uc  1 a 1 wreg ]
-"393
+"474
 [v ReadADC@channel channel `uc  1 a 1 7 ]
-"399
+"480
 } 0
-"401
+"483
 [v _ReadHumidity ReadHumidity `(v  1 e 1 0 ]
 {
-"409
+"491
 } 0
-"370
+"444
+[v _ManageTemperature ManageTemperature `(v  1 e 1 0 ]
+{
+"461
+} 0
+"750
+[v _ManageReceivedPacket ManageReceivedPacket `(v  1 e 1 0 ]
+{
+"780
+} 0
+"708
+[v _HandleRequest HandleRequest `(v  1 e 1 0 ]
+{
+"748
+} 0
+"596
+[v _UART_TxTempHumDataPacket UART_TxTempHumDataPacket `(v  1 e 1 0 ]
+{
+[v UART_TxTempHumDataPacket@dataPacket dataPacket `*.5uc  1 a 1 wreg ]
+[v UART_TxTempHumDataPacket@dataPacket dataPacket `*.5uc  1 a 1 wreg ]
+"598
+[v UART_TxTempHumDataPacket@dataPacket dataPacket `*.5uc  1 a 1 7 ]
+"618
+} 0
+"644
+[v _UART_TxBoolDataPacket UART_TxBoolDataPacket `(v  1 e 1 0 ]
+{
+[v UART_TxBoolDataPacket@dataPacket dataPacket `*.5uc  1 a 1 wreg ]
+[v UART_TxBoolDataPacket@dataPacket dataPacket `*.5uc  1 a 1 wreg ]
+"646
+[v UART_TxBoolDataPacket@dataPacket dataPacket `*.5uc  1 a 1 7 ]
+"666
+} 0
+"668
+[v _PrepareTempHumDataPacket PrepareTempHumDataPacket `(v  1 e 1 0 ]
+{
+"676
+[v PrepareTempHumDataPacket@decimal decimal `f  1 a 4 0 ]
+"668
+[v PrepareTempHumDataPacket@temp temp `f  1 p 4 29 ]
+[v PrepareTempHumDataPacket@hum hum `f  1 p 4 33 ]
+"687
+} 0
+"689
+[v _PrepareBoolDataPacket PrepareBoolDataPacket `(v  1 e 1 0 ]
+{
+[v PrepareBoolDataPacket@type type `uc  1 a 1 wreg ]
+[v PrepareBoolDataPacket@type type `uc  1 a 1 wreg ]
+[v PrepareBoolDataPacket@state state `uc  1 p 1 3 ]
+"691
+[v PrepareBoolDataPacket@type type `uc  1 a 1 5 ]
+"696
+} 0
+"432
 [v _ManageHeater ManageHeater `(v  1 e 1 0 ]
 {
 [v ManageHeater@duty duty `uc  1 a 1 wreg ]
 [v ManageHeater@duty duty `uc  1 a 1 wreg ]
-"372
+"434
 [v ManageHeater@duty duty `uc  1 a 1 4 ]
-"380
+"442
 } 0
-"345
+"407
 [v _ManageDisplays ManageDisplays `(v  1 e 1 0 ]
 {
-"356
+"418
 } 0
-"456
+"539
 [v _UpdateLCDViewWithNumber UpdateLCDViewWithNumber `(v  1 e 1 0 ]
 {
 [v UpdateLCDViewWithNumber@position position `uc  1 a 1 wreg ]
-"467
-[v UpdateLCDViewWithNumber@tens tens `uc  1 a 1 54 ]
-"464
-[v UpdateLCDViewWithNumber@hundreds hundreds `uc  1 a 1 53 ]
-"470
-[v UpdateLCDViewWithNumber@unit unit `uc  1 a 1 52 ]
-"473
-[v UpdateLCDViewWithNumber@decimal decimal `uc  1 a 1 51 ]
-"456
+"550
+[v UpdateLCDViewWithNumber@tens tens `uc  1 a 1 41 ]
+"547
+[v UpdateLCDViewWithNumber@hundreds hundreds `uc  1 a 1 40 ]
+"553
+[v UpdateLCDViewWithNumber@unit unit `uc  1 a 1 39 ]
+"556
+[v UpdateLCDViewWithNumber@decimal decimal `uc  1 a 1 38 ]
+"539
 [v UpdateLCDViewWithNumber@position position `uc  1 a 1 wreg ]
-[v UpdateLCDViewWithNumber@number number `f  1 p 4 42 ]
-"458
-[v UpdateLCDViewWithNumber@position position `uc  1 a 1 50 ]
-"476
-} 0
-"10 C:\Program Files\Microchip\xc8\v2.32\pic\sources\c90\common\xxtofl.c
-[v ___xxtofl __xxtofl `(d  1 e 4 0 ]
-{
-[v ___xxtofl@sign sign `uc  1 a 1 wreg ]
-"13
-[v ___xxtofl@arg arg `ul  1 a 4 12 ]
-"12
-[v ___xxtofl@exp exp `uc  1 a 1 11 ]
-"10
-[v ___xxtofl@sign sign `uc  1 a 1 wreg ]
-[v ___xxtofl@val val `l  1 p 4 2 ]
-"15
-[v ___xxtofl@sign sign `uc  1 a 1 10 ]
-"44
-} 0
-"15 C:\Program Files\Microchip\xc8\v2.32\pic\sources\c90\common\Umul16.c
-[v ___wmul __wmul `(ui  1 e 2 0 ]
-{
-"17
-[v ___wmul@product product `ui  1 a 2 0 ]
-"15
-[v ___wmul@multiplier multiplier `ui  1 p 2 3 ]
-[v ___wmul@multiplicand multiplicand `ui  1 p 2 5 ]
-"53
-} 0
-"43 C:\Program Files\Microchip\xc8\v2.32\pic\sources\c90\common\fltol.c
-[v ___fltol __fltol `(l  1 e 4 0 ]
-{
-"45
-[v ___fltol@exp1 exp1 `uc  1 a 1 31 ]
-[v ___fltol@sign1 sign1 `uc  1 a 1 30 ]
-"43
-[v ___fltol@f1 f1 `d  1 p 4 21 ]
-"70
+[v UpdateLCDViewWithNumber@number number `f  1 p 4 29 ]
+"541
+[v UpdateLCDViewWithNumber@position position `uc  1 a 1 37 ]
+"559
 } 0
 "8 C:\Program Files\Microchip\xc8\v2.32\pic\sources\c90\common\sprcmul.c
 [v ___flmul __flmul `(d  1 e 4 0 ]
 {
-[s S502 . 4 `uc 1 a 1 0 `uc 1 b 1 1 `uc 1 c 1 2 `uc 1 d 1 3 ]
+[s S576 . 4 `uc 1 a 1 0 `uc 1 b 1 1 `uc 1 c 1 2 `uc 1 d 1 3 ]
 "13
-[s S507 . 4 `i 1 wordA 2 0 `i 1 wordB 2 2 ]
-[u S510 . 4 `l 1 i 4 0 `d 1 f 4 0 `S502 1 fAsBytes 4 0 `S507 1 fAsWords 4 0 ]
-[v ___flmul@prod prod `S510  1 a 4 36 ]
+[s S581 . 4 `i 1 wordA 2 0 `i 1 wordB 2 2 ]
+[u S584 . 4 `l 1 i 4 0 `d 1 f 4 0 `S576 1 fAsBytes 4 0 `S581 1 fAsWords 4 0 ]
+[v ___flmul@prod prod `S584  1 a 4 36 ]
 "12
-[v ___flmul@grs grs `ul  1 a 4 30 ]
-[s S579 . 2 `uc 1 a 1 0 `uc 1 b 1 1 ]
+[v ___flmul@grs grs `ul  1 a 4 31 ]
+[s S653 . 2 `uc 1 a 1 0 `uc 1 b 1 1 ]
 "14
-[u S582 . 2 `i 1 i 2 0 `ui 1 n 2 0 `S579 1 nAsBytes 2 0 ]
-[v ___flmul@temp temp `S582  1 a 2 40 ]
+[u S656 . 2 `i 1 i 2 0 `ui 1 n 2 0 `S653 1 nAsBytes 2 0 ]
+[v ___flmul@temp temp `S656  1 a 2 40 ]
 "10
 [v ___flmul@bexp bexp `uc  1 a 1 35 ]
 "11
-[v ___flmul@aexp aexp `uc  1 a 1 34 ]
+[v ___flmul@aexp aexp `uc  1 a 1 30 ]
 "9
 [v ___flmul@sign sign `uc  1 a 1 29 ]
 "8
@@ -287,155 +396,214 @@
 [v __Umul8_16@multiplier multiplier `uc  1 a 1 4 ]
 "60
 } 0
-"8 C:\Program Files\Microchip\xc8\v2.32\pic\sources\c90\common\sprcdiv.c
-[v ___fldiv __fldiv `(d  1 e 4 0 ]
-{
-"21
-[v ___fldiv@grs grs `ul  1 a 4 15 ]
-"22
-[v ___fldiv@rem rem `ul  1 a 4 8 ]
-"20
-[v ___fldiv@new_exp new_exp `i  1 a 2 13 ]
-"19
-[v ___fldiv@aexp aexp `uc  1 a 1 20 ]
-"18
-[v ___fldiv@bexp bexp `uc  1 a 1 19 ]
-"16
-[v ___fldiv@sign sign `uc  1 a 1 12 ]
-"8
-[v ___fldiv@a a `d  1 p 4 0 ]
-[v ___fldiv@b b `d  1 p 4 4 ]
-"185
-} 0
-"431 C:\Users\rconte\Desktop\PW\ITS_REGIONALI_VELOCI\EMBEDDED\ProjectWorkPIC.X\main.c
+"514 C:\Users\rconte\Desktop\PW\ITS_REGIONALI_VELOCI\EMBEDDED\ProjectWorkPIC.X\main.c
 [v _SendLCDString SendLCDString `(v  1 e 1 0 ]
 {
 [v SendLCDString@string string `*.24DCuc  1 a 1 wreg ]
-"433
+"516
 [v SendLCDString@i i `uc  1 a 1 1 ]
-"431
+"514
 [v SendLCDString@string string `*.24DCuc  1 a 1 wreg ]
-"433
+"516
 [v SendLCDString@string string `*.24DCuc  1 a 1 0 ]
-"453
+"536
 } 0
-"283
+"335
 [v _HandleKeypadReading HandleKeypadReading `(v  1 e 1 0 ]
 {
 [v HandleKeypadReading@value value `uc  1 a 1 wreg ]
 [v HandleKeypadReading@value value `uc  1 a 1 wreg ]
-"285
-[v HandleKeypadReading@value value `uc  1 a 1 29 ]
-"308
+"337
+[v HandleKeypadReading@value value `uc  1 a 1 79 ]
+"369
+} 0
+"4 C:\Program Files\Microchip\xc8\v2.32\pic\sources\c90\common\flge.c
+[v ___flge __flge `(b  1 e 0 0 ]
+{
+[v ___flge@ff1 ff1 `d  1 p 4 0 ]
+[v ___flge@ff2 ff2 `d  1 p 4 4 ]
+"19
+} 0
+"620 C:\Users\rconte\Desktop\PW\ITS_REGIONALI_VELOCI\EMBEDDED\ProjectWorkPIC.X\main.c
+[v _UART_TxDesiredTempDataPacket UART_TxDesiredTempDataPacket `(v  1 e 1 0 ]
+{
+[v UART_TxDesiredTempDataPacket@dataPacket dataPacket `*.5uc  1 a 1 wreg ]
+[v UART_TxDesiredTempDataPacket@dataPacket dataPacket `*.5uc  1 a 1 wreg ]
+"622
+[v UART_TxDesiredTempDataPacket@dataPacket dataPacket `*.5uc  1 a 1 7 ]
+"642
+} 0
+"15 C:\Program Files\Microchip\xc8\v2.32\pic\sources\c90\common\Umul16.c
+[v ___wmul __wmul `(ui  1 e 2 0 ]
+{
+"17
+[v ___wmul@product product `ui  1 a 2 0 ]
+"15
+[v ___wmul@multiplier multiplier `ui  1 p 2 3 ]
+[v ___wmul@multiplicand multiplicand `ui  1 p 2 5 ]
+"53
+} 0
+"580 C:\Users\rconte\Desktop\PW\ITS_REGIONALI_VELOCI\EMBEDDED\ProjectWorkPIC.X\main.c
+[v _UART_TxChar UART_TxChar `(v  1 e 1 0 ]
+{
+[v UART_TxChar@ch ch `uc  1 a 1 wreg ]
+[v UART_TxChar@ch ch `uc  1 a 1 wreg ]
+"582
+[v UART_TxChar@ch ch `uc  1 a 1 4 ]
+"593
+} 0
+"698
+[v _PrepareDesiredTempDataPacket PrepareDesiredTempDataPacket `(v  1 e 1 0 ]
+{
+[v PrepareDesiredTempDataPacket@temp temp `f  1 p 4 29 ]
+"706
+} 0
+"10 C:\Program Files\Microchip\xc8\v2.32\pic\sources\c90\common\xxtofl.c
+[v ___xxtofl __xxtofl `(d  1 e 4 0 ]
+{
+[v ___xxtofl@sign sign `uc  1 a 1 wreg ]
+"13
+[v ___xxtofl@arg arg `ul  1 a 4 12 ]
+"12
+[v ___xxtofl@exp exp `uc  1 a 1 11 ]
+"10
+[v ___xxtofl@sign sign `uc  1 a 1 wreg ]
+[v ___xxtofl@val val `l  1 p 4 2 ]
+"15
+[v ___xxtofl@sign sign `uc  1 a 1 10 ]
+"44
+} 0
+"43 C:\Program Files\Microchip\xc8\v2.32\pic\sources\c90\common\fltol.c
+[v ___fltol __fltol `(l  1 e 4 0 ]
+{
+"45
+[v ___fltol@exp1 exp1 `uc  1 a 1 52 ]
+[v ___fltol@sign1 sign1 `uc  1 a 1 51 ]
+"43
+[v ___fltol@f1 f1 `d  1 p 4 42 ]
+"70
 } 0
 "242 C:\Program Files\Microchip\xc8\v2.32\pic\sources\c90\common\sprcadd.c
 [v ___flsub __flsub `(d  1 e 4 0 ]
 {
-[v ___flsub@a a `d  1 p 4 16 ]
-[v ___flsub@b b `d  1 p 4 20 ]
+[v ___flsub@a a `d  1 p 4 0 ]
+[v ___flsub@b b `d  1 p 4 4 ]
 "250
 } 0
 "10
 [v ___fladd __fladd `(d  1 e 4 0 ]
 {
 "17
-[v ___fladd@grs grs `uc  1 a 1 6 ]
+[v ___fladd@grs grs `uc  1 a 1 72 ]
 "15
-[v ___fladd@bexp bexp `uc  1 a 1 5 ]
+[v ___fladd@bexp bexp `uc  1 a 1 71 ]
 "16
-[v ___fladd@aexp aexp `uc  1 a 1 4 ]
+[v ___fladd@aexp aexp `uc  1 a 1 70 ]
 "13
-[v ___fladd@signs signs `uc  1 a 1 3 ]
+[v ___fladd@signs signs `uc  1 a 1 69 ]
 "10
-[v ___fladd@b b `d  1 p 4 0 ]
-[v ___fladd@a a `d  1 p 4 4 ]
+[v ___fladd@b b `d  1 p 4 53 ]
+[v ___fladd@a a `d  1 p 4 57 ]
 "237
 } 0
-"4 C:\Program Files\Microchip\xc8\v2.32\pic\sources\c90\common\flge.c
-[v ___flge __flge `(b  1 e 0 0 ]
+"8 C:\Program Files\Microchip\xc8\v2.32\pic\sources\c90\common\sprcdiv.c
+[v ___fldiv __fldiv `(d  1 e 4 0 ]
 {
-[v ___flge@ff1 ff1 `d  1 p 4 16 ]
-[v ___flge@ff2 ff2 `d  1 p 4 20 ]
+"21
+[v ___fldiv@grs grs `ul  1 a 4 23 ]
+"22
+[v ___fldiv@rem rem `ul  1 a 4 16 ]
+"20
+[v ___fldiv@new_exp new_exp `i  1 a 2 21 ]
 "19
+[v ___fldiv@aexp aexp `uc  1 a 1 28 ]
+"18
+[v ___fldiv@bexp bexp `uc  1 a 1 27 ]
+"16
+[v ___fldiv@sign sign `uc  1 a 1 20 ]
+"8
+[v ___fldiv@a a `d  1 p 4 8 ]
+[v ___fldiv@b b `d  1 p 4 12 ]
+"185
 } 0
-"358 C:\Users\rconte\Desktop\PW\ITS_REGIONALI_VELOCI\EMBEDDED\ProjectWorkPIC.X\main.c
+"420 C:\Users\rconte\Desktop\PW\ITS_REGIONALI_VELOCI\EMBEDDED\ProjectWorkPIC.X\main.c
 [v _ManageCooler ManageCooler `(v  1 e 1 0 ]
 {
 [v ManageCooler@duty duty `uc  1 a 1 wreg ]
 [v ManageCooler@duty duty `uc  1 a 1 wreg ]
-"360
+"422
 [v ManageCooler@duty duty `uc  1 a 1 4 ]
-"368
+"430
 } 0
-"336
+"397
 [v _InitPic InitPic `(v  1 e 1 0 ]
 {
-"343
+"405
 } 0
-"318
+"379
 [v _InitLCD InitLCD `(v  1 e 1 0 ]
 {
-"334
+"395
 } 0
-"417
+"500
 [v _SendLCD SendLCD `(v  1 e 1 0 ]
 {
 [v SendLCD@data data `uc  1 a 1 wreg ]
 [v SendLCD@data data `uc  1 a 1 wreg ]
 [v SendLCD@type type `uc  1 p 1 3 ]
-"419
+"502
 [v SendLCD@data data `uc  1 a 1 6 ]
-"429
+"512
 } 0
-"310
+"371
 [v _InitADC InitADC `(v  1 e 1 0 ]
 {
-"316
+"377
 } 0
-"234
+"286
 [v _CheckOpenDoorButton CheckOpenDoorButton `(v  1 e 1 0 ]
 {
-"261
+"313
 } 0
-"382
+"463
 [v _MotorRotation MotorRotation `(v  1 e 1 0 ]
 {
 [v MotorRotation@direction direction `uc  1 a 1 wreg ]
-"385
+"466
 [v MotorRotation@i i `uc  1 a 1 3 ]
-"382
+"463
 [v MotorRotation@direction direction `uc  1 a 1 wreg ]
 [v MotorRotation@amplitude amplitude `uc  1 p 1 0 ]
-"384
+"465
 [v MotorRotation@direction direction `uc  1 a 1 2 ]
-"389
+"470
 } 0
-"263
+"315
 [v _DriveMotor DriveMotor `(v  1 e 1 0 ]
 {
 [v DriveMotor@direction direction `uc  1 a 1 wreg ]
-"275
-[v DriveMotor@i_172 i `uc  1 a 1 7 ]
-"267
+"327
+[v DriveMotor@i_218 i `uc  1 a 1 7 ]
+"319
 [v DriveMotor@i i `uc  1 a 1 6 ]
-"263
+"315
 [v DriveMotor@direction direction `uc  1 a 1 wreg ]
-"265
+"317
 [v DriveMotor@direction direction `uc  1 a 1 5 ]
-"281
+"333
 } 0
-"206
+"258
 [v _CheckKeypad CheckKeypad `(uc  1 e 1 0 ]
 {
-"231
+"283
 } 0
-"182
+"235
 [v _CheckAlarmButton CheckAlarmButton `(v  1 e 1 0 ]
 {
-"204
+"256
 } 0
-"164
+"203
 [v _ISR ISR `II(v  1 e 1 0 ]
 {
-"179
+"232
 } 0

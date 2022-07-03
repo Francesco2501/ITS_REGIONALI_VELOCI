@@ -1727,8 +1727,19 @@ extern __bank0 __bit __powerdown;
 extern __bank0 __bit __timeout;
 # 28 "C:/Program Files/Microchip/MPLABX/v5.50/packs/Microchip/PIC16Fxxx_DFP/1.2.33/xc8\\pic\\include\\xc.h" 2 3
 # 10 "main.c" 2
-# 50 "main.c"
+# 61 "main.c"
+char flagsSerial;
+
+
+
+
+
+
 unsigned char flags = 0x00;
+
+
+
+
 
 
 unsigned char colScan = 0;
@@ -1752,7 +1763,6 @@ float temperatureBuffer = 0.5;
 float humidity = 50.0;
 int postScalerTemp = 0;
 int postScalerHum = 0;
-char alarmOn = 0;
 char oldRB2;
 char oldRB3;
 char doorOpen = 0;
@@ -1783,6 +1793,22 @@ const char *displays[] =
     "Set Temperature:"
 };
 
+unsigned char alarmOn = 0;
+unsigned char txSuccess = 1;
+unsigned char receivedData;
+unsigned char txReceivedData;
+unsigned char txAttempts = 0;
+unsigned char transmittingData;
+unsigned char partCounter = 0;
+unsigned char i;
+unsigned char boolDataPacketTx[5];
+unsigned char tempHumDataPacketTx[8];
+unsigned char desiredTempPacketTx[6];
+unsigned char dataPacketRx[5];
+unsigned int transmissionCounter = 0;
+unsigned int retransmissionCounter = 0;
+unsigned int addressTransmissionCounter = 0;
+
 void CheckAlarmButton(void);
 void CheckOpenDoorButton(void);
 unsigned char CheckKeypad(void);
@@ -1794,6 +1820,7 @@ void InitPic(void);
 void ManageDisplays(void);
 void ManageCooler(char duty);
 void ManageHeater(char duty);
+void ManageTemperature(void);
 void MotorRotation(char, char);
 int ReadADC(char channel);
 void ReadHumidity(void);
@@ -1803,12 +1830,26 @@ void SendLCDString(const char*);
 void UpdateLCDViewWithNumber(char, float);
 void UpdateTempHumDisplay(void);
 
+void UART_Init(unsigned long baudRate);
+void UART_TxChar(unsigned char ch);
+void UART_TxTempHumDataPacket(unsigned char a[8]);
+void UART_TxDesiredTempDataPacket(unsigned char dataPacket[6]);
+void UART_TxBoolDataPacket(unsigned char a[5]);
+void PrepareBoolDataPacket(char type, char state);
+void PrepareTempHumDataPacket(float temp, float hum);
+void PrepareDesiredTempDataPacket(float temp);
+void CleanTxDataPacket(void);
+void HandleRequest(void);
+void ManageReceivedPacket(void);
+
 int main()
 {
     InitPic();
     InitLCD();
     InitADC();
+    UART_Init(9600);
     SendLCDString(startDisplay);
+
     while(1)
     {
         keypadReading = CheckKeypad();
@@ -1816,23 +1857,10 @@ int main()
         ReadTemperature();
         CheckAlarmButton();
         CheckOpenDoorButton();
-        if(temperature < (setTemp-temperatureBuffer))
-        {
-            dutyHeater = 200;
-            dutyCooler = 0;
-        }
-        else if (temperature > (setTemp+temperatureBuffer))
-        {
-            dutyCooler = 200;
-            dutyHeater = 0;
-        }
-        else
-        {
-            dutyHeater = 0;
-            dutyCooler = 0;
-        }
+        ManageTemperature();
         ManageHeater(dutyHeater);
         ManageCooler(dutyCooler);
+        ManageReceivedPacket();
         if(currentDisplay == 2) UpdateTempHumDisplay();
         if(flags & 0x01)
         {
@@ -1844,8 +1872,22 @@ int main()
 
 void __attribute__((picinterrupt(("")))) ISR()
 {
+    if(RCIF && !(flagsSerial & 0x02))
+    {
+        receivedData = RCREG;
+        flagsSerial |= 1<<0x01;
+    }
+    if(TXIF && transmissionCounter>5)
+    {
+        txReceivedData=RCREG;
+        if(txReceivedData != transmittingData) txSuccess=0;
+    }
     if(INTCON & 0x04)
     {
+        if(flagsSerial & 0x02) transmissionCounter++;
+        if(flagsSerial & 0x04) retransmissionCounter++;
+        if(flagsSerial & 0x08) addressTransmissionCounter++;
+
         if(flags & 0x02)
             counterAntibouncing++;
 
@@ -1853,7 +1895,7 @@ void __attribute__((picinterrupt(("")))) ISR()
         else dutyCounter ++;
 
         INTCON &= ~0x04;
-        TMR0 = 6;
+        TMR0 = 178;
         postScalerTemp++;
         postScalerHum++;
     }
@@ -1863,7 +1905,6 @@ void __attribute__((picinterrupt(("")))) ISR()
 void CheckAlarmButton()
 {
     TRISB |= 0x04;
-    TRISC = 0x00;
 
     if(!(PORTB & 0x04) && oldRB2)
     {
@@ -1970,10 +2011,19 @@ void HandleKeypadReading(unsigned char value)
         currentDisplay --;
 
     if(value == 2 && currentDisplay == 3)
+    {
         setTemp += 0.1;
+        PrepareDesiredTempDataPacket(setTemp);
+        UART_TxDesiredTempDataPacket(desiredTempPacketTx);
+    }
+
 
     if(value == 8 && currentDisplay == 3)
+    {
         setTemp -= 0.1;
+        PrepareDesiredTempDataPacket(setTemp);
+        UART_TxDesiredTempDataPacket(desiredTempPacketTx);
+    }
 
     if(currentDisplay >= 4)
         currentDisplay = 1;
@@ -2016,10 +2066,11 @@ void InitLCD()
 
 void InitPic()
 {
-    TRISC = 0x00;
     TRISE = 0x00;
-    INTCON = 0xA0;
-    OPTION_REG = 0x06;
+    TRISD = 0x00;
+    PORTD = 0x00;
+    INTCON |= 0xA0;
+    OPTION_REG = 0x02;
     TMR0 = 6;
 }
 
@@ -2060,6 +2111,25 @@ void ManageHeater(char duty)
     }
 }
 
+void ManageTemperature(void)
+{
+    if(temperature < (setTemp-temperatureBuffer))
+        {
+            dutyHeater = 200;
+            dutyCooler = 0;
+        }
+        else if (temperature > (setTemp+temperatureBuffer))
+        {
+            dutyCooler = 200;
+            dutyHeater = 0;
+        }
+        else
+        {
+            dutyHeater = 0;
+            dutyCooler = 0;
+        }
+}
+
 void MotorRotation(char direction, char amplitude)
 {
     TRISD &= 0b00001111;
@@ -2079,15 +2149,17 @@ int ReadADC(char channel)
     return ADRESL | (ADRESH << 8);
 }
 
+
 void ReadHumidity()
 {
-    if(postScalerHum > 100)
+    if(postScalerHum > 500)
     {
         if(humidity >= 100) humidity = 0;
         else humidity += 0.1;
         postScalerHum = 0;
     }
 }
+
 
 void ReadTemperature()
 {
@@ -2160,4 +2232,219 @@ void UpdateTempHumDisplay()
 {
         UpdateLCDViewWithNumber(0xCA, humidity);
         UpdateLCDViewWithNumber(0x8A, temperature);
+}
+
+void UART_Init(unsigned long baudRate)
+{
+    TRISC=0x80;
+    TXSTA=(1<<5);
+    RCSTA=(1<<7) | (1<<4);
+    SPBRG = (char)(8000000/(long)(16UL*baudRate))-1;
+
+    INTCON |= 0xC0;
+    PIE1 |= 0x22;
+
+    flagsSerial = 0;
+}
+
+void UART_TxChar(unsigned char ch)
+{
+    transmittingData = ch;
+    transmissionCounter = 0;
+    PORTE=0x01;
+    while(!TXIF);
+    flagsSerial |= 0x02;
+    TXREG=ch;
+
+    while(transmissionCounter<7);
+    flagsSerial &= ~0x02;
+    transmissionCounter = 0;
+    PORTE = 0x00;
+}
+
+
+void UART_TxTempHumDataPacket(unsigned char dataPacket[8])
+{
+    txAttempts = 0;
+    retransmissionCounter = 0;
+
+
+
+    while(txAttempts<1)
+    {
+        flagsSerial |= 0x04;
+
+        while (retransmissionCounter < (txAttempts*1*300));
+        retransmissionCounter = 0;
+        flagsSerial &= ~0x04;
+        txSuccess = 1;
+        for(i=0;i<8;i++)
+        {
+            UART_TxChar(dataPacket[i]);
+        }
+        if(txSuccess) break;
+        txAttempts++;
+    }
+}
+
+void UART_TxDesiredTempDataPacket(unsigned char dataPacket[6])
+{
+    txAttempts = 0;
+    retransmissionCounter = 0;
+
+
+
+    while(txAttempts<1)
+    {
+        flagsSerial |= 0x04;
+
+        while (retransmissionCounter < (txAttempts*1*300));
+        retransmissionCounter = 0;
+        flagsSerial &= ~0x04;
+        txSuccess = 1;
+        for(i=0;i<6;i++)
+        {
+            UART_TxChar(dataPacket[i]);
+        }
+        if(txSuccess) break;
+        txAttempts++;
+    }
+}
+
+void UART_TxBoolDataPacket(unsigned char dataPacket[5])
+{
+    txAttempts = 0;
+    retransmissionCounter = 0;
+
+
+
+    while(txAttempts<1)
+    {
+        flagsSerial |= 0x04;
+
+        while (retransmissionCounter < (txAttempts*1*300));
+        retransmissionCounter = 0;
+        flagsSerial &= ~0x04;
+        txSuccess = 1;
+        for(i=0;i<5;i++)
+        {
+            UART_TxChar(dataPacket[i]);
+        }
+        if(txSuccess) break;
+        txAttempts++;
+    }
+}
+
+void PrepareTempHumDataPacket(float temp, float hum)
+{
+    tempHumDataPacketTx[0] = 0xFF;
+    tempHumDataPacketTx[1] = 1;
+    tempHumDataPacketTx[2] = 0x01;
+    if(temp<0)
+    {
+        tempHumDataPacketTx[3] = 0x80 + (char)(temp*(-1));
+        float decimal = (float)(((temp * (-1)) + (int)temp)/0.1);
+        tempHumDataPacketTx[4] = (char)decimal;
+     }
+    else
+    {
+        tempHumDataPacketTx[3] = (char)(temp);;
+        tempHumDataPacketTx[4] = (char)((temp-(char)temp)/0.1);
+    }
+    tempHumDataPacketTx[5] = (char)hum;
+    tempHumDataPacketTx[6] = (char)((hum-(char)hum)/0.1);
+    tempHumDataPacketTx[7] = 0xFE;
+}
+
+void PrepareBoolDataPacket(char type, char state)
+{
+    boolDataPacketTx[0] = 0xFF;
+    boolDataPacketTx[1] = 1;
+    boolDataPacketTx[2] = type;
+    boolDataPacketTx[3] = state;
+    boolDataPacketTx[4] = 0xFE;
+}
+
+void PrepareDesiredTempDataPacket(float temp)
+{
+    desiredTempPacketTx[0] = 0xFF;
+    desiredTempPacketTx[1] = 1;
+    desiredTempPacketTx[2] = 0x04;
+    desiredTempPacketTx[3] = (char)temp;
+    desiredTempPacketTx[4] = (char)((temp-(char)temp)/0.1);
+    desiredTempPacketTx[5] = 0xFE;
+}
+
+void HandleRequest()
+{
+    if(dataPacketRx[1] == 0x23)
+    {
+        if(dataPacketRx[2] == 0x40)
+        {
+            flagsSerial |= 0x08;
+            while(addressTransmissionCounter < (1 * 10));
+            addressTransmissionCounter = 0;
+            flagsSerial &= ~0x08;
+            PrepareBoolDataPacket(0x40,0x01);
+            UART_TxBoolDataPacket(boolDataPacketTx);
+        }
+    }
+    if(dataPacketRx[1] != 1)
+    {
+        return;
+    }
+    else
+    {
+        if(dataPacketRx[2] == 0x01)
+        {
+
+            PrepareTempHumDataPacket(temperature, humidity);
+            UART_TxTempHumDataPacket(tempHumDataPacketTx);
+        }
+        if(dataPacketRx[2] == 0x20)
+        {
+
+            alarmOn = dataPacketRx[3];
+        }
+        if(dataPacketRx[2] == 0x04)
+        {
+
+        }
+        if(dataPacketRx[2] == 0x10)
+        {
+
+        }
+    }
+}
+
+void ManageReceivedPacket(void)
+{
+    if(alarmOn)
+    {
+        TRISD = 0x00;
+        PORTD = 0XFF;
+    }
+    if(!alarmOn)
+    {
+       TRISD = 0x00;
+       PORTD = 0X00;
+    }
+    if(flagsSerial & 1<<0x01)
+    {
+        flagsSerial &= ~(1<<0x01);
+
+        if(receivedData == 0xFF)
+        {
+            partCounter = 0;
+        }
+        if(receivedData == 0xFE)
+        {
+            HandleRequest();
+        }
+        if(!(partCounter >= 5))
+        {
+            dataPacketRx[partCounter] = receivedData;
+            partCounter ++;
+        }
+    }
 }

@@ -10,11 +10,7 @@
 #include <xc.h>
 
 //TODO
-//PULSANTE PORTE CHE ATTIVA MOTORE IN DUE DIRAZIONI OPPOSTE (RB3-RB4)
-//TRASMISSIONE/RICEZIONE E GESTIONE PACCHETTI DATI
 //LETTURA INTERRUTTORE PORTA BAGNO
-//LETTURA VALORI DTH 22
-//ATTIVA VENTOLA/RESISTENZA PER REGOLARE TEMPERATURA
 
 #define _XTAL_FREQ 8000000
 
@@ -41,14 +37,40 @@
 #define CLOCKWISE_ROTATION 0x00
 #define COUNTER_CLOCKWISE_ROTATION 0x01
 
-//flags
+#define SBIT_TXEN     5
+#define SBIT_SPEN     7
+#define SBIT_CREN     4
+#define ADDRESS       1
+#define BROADCAST 0x23//broadcast is # --> 0x23 in UTF 8
+#define TEMP_HUM_TYPE 0x01
+#define ALARM_TYPE 0x20
+#define DESIRED_TEMPERATURE_TYPE 0x04
+#define DOOR_TYPE 0x10
+#define TOILET_TYPE 0x08
+#define ADDRESS_TYPE 0x40
+#define START_OF_PACKET 0xFF
+#define END_OF_PACKET 0xFE
+
+
+#define BOOL_PACKET_SIZE 5 //0xFF|ADDRESS|TYPE|BOOL|0xFE
+#define TEMP_HUM_PACKET_SIZE 8 //0xFF|ADDRESS|TYPE|INT_TEMP|DEC_TEMP|INT_HUM|DEC_HUM|0xFE
+#define DESIRED_TEMP_PACKET_SIZE 6 //0xFF|ADDRESS|TYPE|INT_TEMP|DEC_TEMP|0xFE
+#define REQUEST_PACKET_SIZE 5 //0xFF|ADDRESS|TYPE|VALUE|0xFD
+
+//FLAGS FOR SERIAL
+char flagsSerial;
+#define BIT_RECEIVED 0x01
+#define TX_ADDRESS_WAITER 0x08
+#define TRANSMISSION_RUNNING 0x02
+#define START_RETRANSMISSION_COUNTER 0x04
+
+//FLAGS 
+unsigned char flags = 0x00;
+//|newReadingAvailable|keyPressed|alarmOn|
 #define NEW_READING_AVAILABLE 0x01
 #define KEY_PRESSED 0x02
 #define ALARM_ON 0x04
 #define CHANNEL 0x02
-
-unsigned char flags = 0x00;
-//|newReadingAvailable|keyPressed|alarmOn|
 
 unsigned char colScan = 0;
 unsigned char rowScan = 0;
@@ -71,7 +93,6 @@ float temperatureBuffer = 0.5;
 float humidity = 50.0;
 int postScalerTemp = 0;
 int postScalerHum = 0;
-char alarmOn = 0;
 char oldRB2;
 char oldRB3;
 char doorOpen = 0;
@@ -102,6 +123,22 @@ const char *displays[] =
     "Set Temperature:"
 };
 
+unsigned char alarmOn = 0;
+unsigned char txSuccess = 1;
+unsigned char receivedData;
+unsigned char txReceivedData;
+unsigned char txAttempts = 0;
+unsigned char transmittingData;
+unsigned char partCounter = 0;
+unsigned char i;
+unsigned char boolDataPacketTx[BOOL_PACKET_SIZE]; 
+unsigned char tempHumDataPacketTx[TEMP_HUM_PACKET_SIZE]; 
+unsigned char desiredTempPacketTx[DESIRED_TEMP_PACKET_SIZE]; 
+unsigned char dataPacketRx[REQUEST_PACKET_SIZE]; 
+unsigned int transmissionCounter = 0;
+unsigned int retransmissionCounter = 0;
+unsigned int addressTransmissionCounter = 0;
+
 void CheckAlarmButton(void);
 void CheckOpenDoorButton(void);
 unsigned char CheckKeypad(void);
@@ -113,6 +150,7 @@ void InitPic(void);
 void ManageDisplays(void);
 void ManageCooler(char duty);
 void ManageHeater(char duty);
+void ManageTemperature(void);
 void MotorRotation(char, char);
 int ReadADC(char channel);
 void ReadHumidity(void); //SIMULATED
@@ -122,12 +160,26 @@ void SendLCDString(const char*);
 void UpdateLCDViewWithNumber(char, float);
 void UpdateTempHumDisplay(void);
 
+void UART_Init(unsigned long baudRate);
+void UART_TxChar(unsigned char ch);
+void UART_TxTempHumDataPacket(unsigned char a[TEMP_HUM_PACKET_SIZE]);
+void UART_TxDesiredTempDataPacket(unsigned char dataPacket[DESIRED_TEMP_PACKET_SIZE]);
+void UART_TxBoolDataPacket(unsigned char a[BOOL_PACKET_SIZE]);
+void PrepareBoolDataPacket(char type, char state);
+void PrepareTempHumDataPacket(float temp, float hum);
+void PrepareDesiredTempDataPacket(float temp);
+void CleanTxDataPacket(void);
+void HandleRequest(void);
+void ManageReceivedPacket(void);
+
 int main()
 {
     InitPic();
     InitLCD();
     InitADC();
+    UART_Init(9600);
     SendLCDString(startDisplay);
+
     while(1)
     {
         keypadReading = CheckKeypad();
@@ -135,23 +187,10 @@ int main()
         ReadTemperature();
         CheckAlarmButton();
         CheckOpenDoorButton();
-        if(temperature < (setTemp-temperatureBuffer))
-        {
-            dutyHeater = 200;
-            dutyCooler = 0;
-        }
-        else if (temperature > (setTemp+temperatureBuffer))
-        {
-            dutyCooler = 200;
-            dutyHeater = 0;
-        }
-        else
-        {
-            dutyHeater = 0;
-            dutyCooler = 0; 
-        }
+        ManageTemperature();
         ManageHeater(dutyHeater);
         ManageCooler(dutyCooler);
+        ManageReceivedPacket();
         if(currentDisplay == TEMP_HUM_DISPLAY) UpdateTempHumDisplay();
         if(flags & NEW_READING_AVAILABLE)
         {
@@ -163,8 +202,22 @@ int main()
 
 void __interrupt() ISR()
 {
+    if(RCIF && !(flagsSerial & TRANSMISSION_RUNNING))
+    {
+        receivedData = RCREG;
+        flagsSerial |= 1<<BIT_RECEIVED;   
+    } 
+    if(TXIF && transmissionCounter>5) //TRANSMISSION STARTED AND WAIT FOR RECEIVING TANSMITTED
+    {
+        txReceivedData=RCREG;
+        if(txReceivedData != transmittingData) txSuccess=0;
+    }
     if(INTCON & 0x04)
     {  
+        if(flagsSerial & TRANSMISSION_RUNNING) transmissionCounter++;
+        if(flagsSerial & START_RETRANSMISSION_COUNTER) retransmissionCounter++;
+        if(flagsSerial & TX_ADDRESS_WAITER) addressTransmissionCounter++;
+        
         if(flags & KEY_PRESSED)
             counterAntibouncing++;
         
@@ -172,7 +225,7 @@ void __interrupt() ISR()
         else dutyCounter ++;
         
         INTCON &= ~0x04;
-        TMR0 = 6;
+        TMR0 = 178;
         postScalerTemp++;
         postScalerHum++;
     }
@@ -182,7 +235,6 @@ void __interrupt() ISR()
 void CheckAlarmButton()
 {
     TRISB |= 0x04;
-    TRISC = 0x00;
 
     if(!(PORTB & 0x04) && oldRB2)
     {
@@ -289,10 +341,19 @@ void HandleKeypadReading(unsigned char value)
         currentDisplay --;
     
     if(value == UP_BUTTON && currentDisplay == SET_TEMP_DISPLAY)
+    {
         setTemp += 0.1;
+        PrepareDesiredTempDataPacket(setTemp);
+        UART_TxDesiredTempDataPacket(desiredTempPacketTx);
+    }
+        
 
-    if(value == DOWN_BUTTON && currentDisplay == SET_TEMP_DISPLAY)
+    if(value == DOWN_BUTTON && currentDisplay == SET_TEMP_DISPLAY) 
+    {
         setTemp -= 0.1;
+        PrepareDesiredTempDataPacket(setTemp);
+        UART_TxDesiredTempDataPacket(desiredTempPacketTx);
+    }
 
     if(currentDisplay >= TOTAL_DISPLAYS)
         currentDisplay = 1;
@@ -335,10 +396,11 @@ void InitLCD()
 
 void InitPic()
 {
-    TRISC = 0x00;
     TRISE = 0x00;
-    INTCON = 0xA0;
-    OPTION_REG = 0x06;
+    TRISD = 0x00;
+    PORTD = 0x00;
+    INTCON |= 0xA0;
+    OPTION_REG = 0x02; //0.0312 MS
     TMR0 = 6;
 }
 
@@ -379,6 +441,25 @@ void ManageHeater(char duty)
     }
 }
 
+void ManageTemperature(void)
+{
+    if(temperature < (setTemp-temperatureBuffer))
+        {
+            dutyHeater = 200;
+            dutyCooler = 0;
+        }
+        else if (temperature > (setTemp+temperatureBuffer))
+        {
+            dutyCooler = 200;
+            dutyHeater = 0;
+        }
+        else
+        {
+            dutyHeater = 0;
+            dutyCooler = 0; 
+        }
+}
+
 void MotorRotation(char direction, char amplitude)
 {
     TRISD &= 0b00001111;    
@@ -398,9 +479,10 @@ int ReadADC(char channel)
     return ADRESL | (ADRESH << 8);
 }
 
+//SIMULATED HUMIDITY
 void ReadHumidity()
 {
-    if(postScalerHum > 100)
+    if(postScalerHum > 500)
     {
         if(humidity >= 100) humidity = 0;
         else humidity += 0.1;
@@ -408,6 +490,7 @@ void ReadHumidity()
     }
 }
 
+//TEMP FROM LM35
 void ReadTemperature()
 {
     temperature = (float)(ReadADC(CHANNEL) * 0.489);
@@ -481,6 +564,220 @@ void UpdateTempHumDisplay()
         UpdateLCDViewWithNumber(0x8A, temperature);
 }
 
+void UART_Init(unsigned long baudRate)
+{    
+    TRISC=0x80;            // CONFIGURE RX PIN AS INPUT AND TX AS OUTPUT  
+    TXSTA=(1<<SBIT_TXEN);  // ASYNC MODE, 8-BIT, ENABLE TX
+    RCSTA=(1<<SBIT_SPEN) | (1<<SBIT_CREN);  // ENABLE SERIAL PORT AND CONTINUOUS RECEIVE
+    SPBRG = (char)(_XTAL_FREQ/(long)(16UL*baudRate))-1;
+    
+    INTCON |= 0xC0; //ENABLE GIE AND PEIE
+    PIE1 |= 0x22; //ENABLE RCIE AND TXIE
+    
+    flagsSerial = 0;
+}
+
+void UART_TxChar(unsigned char ch)
+{
+    transmittingData = ch;
+    transmissionCounter = 0;
+    PORTE=0x01;
+    while(!TXIF);
+    flagsSerial |= TRANSMISSION_RUNNING;
+    TXREG=ch;
+    //WAIT BEFORE START LISTENING (RE0 LOW)
+    while(transmissionCounter<7);
+    flagsSerial &= ~TRANSMISSION_RUNNING;
+    transmissionCounter = 0;
+    PORTE = 0x00;
+}
+
+//TODO: APPLY RETRANSMISSION TO ALL TX FUNXTIONS --> MERGE IN ONE FUNCTION?
+void UART_TxTempHumDataPacket(unsigned char dataPacket[TEMP_HUM_PACKET_SIZE])
+{
+    txAttempts = 0;
+    retransmissionCounter = 0;
+    //IF AT LEAST ONE BYTE IS CORRUPTED RETRANSMIT ALL PACKET
+    //MAX 9 ATTEMPTS OF RETRASMIT
+    //while(txAttempts<9)
+    while(txAttempts<1)//IN SIMULATED NO CHECK COLLISION
+    {
+        flagsSerial |= START_RETRANSMISSION_COUNTER;
+        //WAIT FOR RETRASMIT A TIME = NUMBER_OF_ATTEMPTS * COACH_ADDRESS * ~10 MS
+        while (retransmissionCounter < (txAttempts*ADDRESS*300));
+        retransmissionCounter = 0;
+        flagsSerial &= ~START_RETRANSMISSION_COUNTER;
+        txSuccess = 1;
+        for(i=0;i<TEMP_HUM_PACKET_SIZE;i++)
+        {
+            UART_TxChar(dataPacket[i]); 
+        }
+        if(txSuccess) break;
+        txAttempts++;
+    }
+}
+
+void UART_TxDesiredTempDataPacket(unsigned char dataPacket[DESIRED_TEMP_PACKET_SIZE])
+{
+    txAttempts = 0;
+    retransmissionCounter = 0;
+    //IF AT LEAST ONE BYTE IS CORRUPTED RETRANSMIT ALL PACKET
+    //MAX 9 ATTEMPTS OF RETRASMIT
+    //while(txAttempts<9)
+    while(txAttempts<1)//IN SIMULATED NO CHECK COLLISION
+    {
+        flagsSerial |= START_RETRANSMISSION_COUNTER;
+        //WAIT FOR RETRASMIT A TIME = NUMBER_OF_ATTEMPTS * COACH_ADDRESS * ~10 MS
+        while (retransmissionCounter < (txAttempts*ADDRESS*300));
+        retransmissionCounter = 0;
+        flagsSerial &= ~START_RETRANSMISSION_COUNTER;
+        txSuccess = 1;
+        for(i=0;i<DESIRED_TEMP_PACKET_SIZE;i++)
+        {
+            UART_TxChar(dataPacket[i]); 
+        }
+        if(txSuccess) break;
+        txAttempts++;
+    } 
+}
+
+void UART_TxBoolDataPacket(unsigned char dataPacket[BOOL_PACKET_SIZE])
+{
+    txAttempts = 0;
+    retransmissionCounter = 0;
+    //IF AT LEAST ONE BYTE IS CORRUPTED RETRANSMIT ALL PACKET
+    //MAX 9 ATTEMPTS OF RETRASMIT
+    //while(txAttempts<9)
+    while(txAttempts<1)//IN SIMULATED NO CHECK COLLISION
+    {
+        flagsSerial |= START_RETRANSMISSION_COUNTER;
+        //WAIT FOR RETRASMIT A TIME = NUMBER_OF_ATTEMPTS * COACH_ADDRESS * ~10 MS
+        while (retransmissionCounter < (txAttempts*ADDRESS*300));
+        retransmissionCounter = 0;
+        flagsSerial &= ~START_RETRANSMISSION_COUNTER;
+        txSuccess = 1;
+        for(i=0;i<BOOL_PACKET_SIZE;i++)
+        {
+            UART_TxChar(dataPacket[i]); 
+        }
+        if(txSuccess) break;
+        txAttempts++;
+    }
+}
+
+void PrepareTempHumDataPacket(float temp, float hum)
+{
+    tempHumDataPacketTx[0] = START_OF_PACKET;
+    tempHumDataPacketTx[1] = ADDRESS;
+    tempHumDataPacketTx[2] = TEMP_HUM_TYPE;
+    if(temp<0)
+    { 
+        tempHumDataPacketTx[3] = 0x80 + (char)(temp*(-1));
+        float decimal = (float)(((temp * (-1)) + (int)temp)/0.1);
+        tempHumDataPacketTx[4] = (char)decimal;
+     }
+    else 
+    {
+        tempHumDataPacketTx[3] = (char)(temp);;
+        tempHumDataPacketTx[4] = (char)((temp-(char)temp)/0.1);
+    }
+    tempHumDataPacketTx[5] = (char)hum;
+    tempHumDataPacketTx[6] = (char)((hum-(char)hum)/0.1);
+    tempHumDataPacketTx[7] = END_OF_PACKET;
+}
+
+void PrepareBoolDataPacket(char type, char state)
+{
+    boolDataPacketTx[0] = START_OF_PACKET;
+    boolDataPacketTx[1] = ADDRESS;
+    boolDataPacketTx[2] = type;
+    boolDataPacketTx[3] = state;
+    boolDataPacketTx[4] = END_OF_PACKET;
+}
+
+void PrepareDesiredTempDataPacket(float temp)
+{
+    desiredTempPacketTx[0] = START_OF_PACKET;
+    desiredTempPacketTx[1] = ADDRESS;
+    desiredTempPacketTx[2] = DESIRED_TEMPERATURE_TYPE;
+    desiredTempPacketTx[3] = (char)temp;
+    desiredTempPacketTx[4] = (char)((temp-(char)temp)/0.1);
+    desiredTempPacketTx[5] = END_OF_PACKET;
+}
+
+void HandleRequest()
+{
+    if(dataPacketRx[1] == BROADCAST)
+    {
+        if(dataPacketRx[2] == ADDRESS_TYPE)
+        {
+            flagsSerial |= TX_ADDRESS_WAITER;
+            while(addressTransmissionCounter < (ADDRESS * 10));
+            addressTransmissionCounter = 0;
+            flagsSerial &= ~TX_ADDRESS_WAITER;
+            PrepareBoolDataPacket(0x40,0x01);
+            UART_TxBoolDataPacket(boolDataPacketTx);
+        }
+    }
+    if(dataPacketRx[1] != ADDRESS)
+    {
+        return;
+    }
+    else
+    {
+        if(dataPacketRx[2] == TEMP_HUM_TYPE)
+        {
+            //TODO: substitute with send reading
+            PrepareTempHumDataPacket(temperature, humidity);
+            UART_TxTempHumDataPacket(tempHumDataPacketTx);
+        }
+        if(dataPacketRx[2] == ALARM_TYPE)
+        {
+            //ACTIVATE ALARM
+            alarmOn = dataPacketRx[3];
+        }
+        if(dataPacketRx[2] == DESIRED_TEMPERATURE_TYPE)
+        {
+            //desired_temp = dataPacketRX[2] + data?acketRX[3]*0.1;
+        }
+        if(dataPacketRx[2] == DOOR_TYPE)
+        {
+            //desired_temp = dataPacketRX[2] + data?acketRX[3]*0.1;
+        }
+    }
+}
+
+void ManageReceivedPacket(void)
+{
+    if(alarmOn)
+    {
+        TRISD = 0x00;
+        PORTD = 0XFF;
+    }
+    if(!alarmOn)
+    {
+       TRISD = 0x00;
+       PORTD = 0X00; 
+    }
+    if(flagsSerial & 1<<BIT_RECEIVED)
+    {
+        flagsSerial &= ~(1<<BIT_RECEIVED);
+
+        if(receivedData == START_OF_PACKET)
+        {
+            partCounter = 0;
+        } 
+        if(receivedData == END_OF_PACKET)
+        {
+            HandleRequest();
+        }
+        if(!(partCounter >=  REQUEST_PACKET_SIZE))
+        {
+            dataPacketRx[partCounter] = receivedData;
+            partCounter ++;
+        }
+    }
+}
 
 
 
