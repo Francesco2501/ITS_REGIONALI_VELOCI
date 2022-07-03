@@ -1727,24 +1727,29 @@ extern __bank0 __bit __powerdown;
 extern __bank0 __bit __timeout;
 # 28 "C:/Program Files/Microchip/MPLABX/v5.50/packs/Microchip/PIC16Fxxx_DFP/1.2.33/xc8\\pic\\include\\xc.h" 2 3
 # 10 "main.c" 2
-# 48 "main.c"
+# 50 "main.c"
 unsigned char flags = 0x00;
 
 
 unsigned char colScan = 0;
 unsigned char rowScan = 0;
+unsigned char dutyHeater = 0;
+unsigned char dutyCooler = 0;
 int counterAntibouncing = 0;
+int counterAntibouncingAlarm = 0;
+int counterAntibouncingDoor = 0;
+int ADCReading = 0;
 unsigned char keyValue = 99;
 unsigned char keypadReading;
+unsigned char dutyCounter = 0;
 char currentDisplay = 0;
 char oldDisplay = 0;
 float setTemp = 22.0;
 char minSetTemp = 12;
 char maxSetTemp = 35;
 float temperature = 0.0;
-float oldTemperature = 0.0;
+float temperatureBuffer = 0.5;
 float humidity = 50.0;
-float oldHumidity = 50.0;
 int postScalerTemp = 0;
 int postScalerHum = 0;
 char alarmOn = 0;
@@ -1774,7 +1779,7 @@ const char *displays[] =
 {
     "",
     "  Welcome To        Coach 1",
-    "Temp    : 22.3  Humidity: 80.3 %",
+    "Temp    :       Humidity:      %",
     "Set Temperature:"
 };
 
@@ -1783,23 +1788,26 @@ void CheckOpenDoorButton(void);
 unsigned char CheckKeypad(void);
 void DriveMotor(char);
 void HandleKeypadReading(unsigned char);
+void InitADC(void);
 void InitLCD(void);
 void InitPic(void);
 void ManageDisplays(void);
+void ManageCooler(char duty);
+void ManageHeater(char duty);
 void MotorRotation(char, char);
+int ReadADC(char channel);
 void ReadHumidity(void);
 void ReadTemperature(void);
 void SendLCD(char, char);
 void SendLCDString(const char*);
-void UpdateLCDView(char, const char*);
 void UpdateLCDViewWithNumber(char, float);
 void UpdateTempHumDisplay(void);
-void Toggle(unsigned char*, char);
 
 int main()
 {
     InitPic();
     InitLCD();
+    InitADC();
     SendLCDString(startDisplay);
     while(1)
     {
@@ -1808,11 +1816,27 @@ int main()
         ReadTemperature();
         CheckAlarmButton();
         CheckOpenDoorButton();
+        if(temperature < (setTemp-temperatureBuffer))
+        {
+            dutyHeater = 200;
+            dutyCooler = 0;
+        }
+        else if (temperature > (setTemp+temperatureBuffer))
+        {
+            dutyCooler = 200;
+            dutyHeater = 0;
+        }
+        else
+        {
+            dutyHeater = 0;
+            dutyCooler = 0;
+        }
+        ManageHeater(dutyHeater);
+        ManageCooler(dutyCooler);
         if(currentDisplay == 2) UpdateTempHumDisplay();
         if(flags & 0x01)
         {
             ManageDisplays();
-
             flags &= ~0x01;
         }
     }
@@ -1824,6 +1848,9 @@ void __attribute__((picinterrupt(("")))) ISR()
     {
         if(flags & 0x02)
             counterAntibouncing++;
+
+        if(dutyCounter >= 255) dutyCounter = 0;
+        else dutyCounter ++;
 
         INTCON &= ~0x04;
         TMR0 = 6;
@@ -1841,18 +1868,19 @@ void CheckAlarmButton()
     if(!(PORTB & 0x04) && oldRB2)
     {
         oldRB2 = 0;
-        if(alarmOn)
+        if(flags & 0x04)
         {
-            alarmOn = 0;
+            flags &= ~0x04;
         }
-        else alarmOn = 1;
+        else flags |= 0x04;
     }
     if((PORTB & 0x04) && !oldRB2)
     {
-        _delay((unsigned long)((10)*(16000000/4000.0)));
+        _delay((unsigned long)((10)*(8000000/4000.0)));
         if((PORTB & 0x04) && !oldRB2) oldRB2 = 1;
+
     }
-    if(alarmOn) PORTC |= 0x02;
+    if(flags & 0x04) PORTC |= 0x02;
     else PORTC &= ~0x02;
 }
 
@@ -1864,13 +1892,13 @@ unsigned char CheckKeypad()
     {
         PORTB |= 0x07;
         PORTB &= colMask[colScan];
-        _delay((unsigned long)((15)*(16000000/4000000.0)));
+        _delay((unsigned long)((15)*(8000000/4000000.0)));
         for( rowScan = 0; rowScan < 4; rowScan++)
         {
             if(!(PORTD & rowMask[rowScan]))
             {
                 flags |= 0x02;
-                if(counterAntibouncing > 20)
+                if(counterAntibouncing > 10)
                 {
                     keyValue = rowScan+(4*colScan);
                     flags &= ~0x02;
@@ -1887,7 +1915,6 @@ unsigned char CheckKeypad()
 void CheckOpenDoorButton()
 {
     TRISB |= 0x08;
-
     if(!(PORTB & 0x08) && oldRB3)
     {
         oldRB3 = 0;
@@ -1899,7 +1926,7 @@ void CheckOpenDoorButton()
     }
     if((PORTB & 0x08) && !oldRB3)
     {
-        _delay((unsigned long)((10)*(16000000/4000.0)));
+        _delay((unsigned long)((10)*(8000000/4000.0)));
         if((PORTB & 0x08) && !oldRB3) oldRB3 = 1;
     }
     if(!oldDoorOpen && doorOpen)
@@ -1921,7 +1948,7 @@ void DriveMotor(char direction)
         for (char i = 0; i<5; i++)
         {
             PORTD = clockWise[i];
-            _delay((unsigned long)((10)*(16000000/4000.0)));
+            _delay((unsigned long)((10)*(8000000/4000.0)));
         }
     }
     if (direction == 0x01)
@@ -1929,7 +1956,7 @@ void DriveMotor(char direction)
         for (char i = 0; i<5; i++)
         {
             PORTD = counterClockWise[i];
-            _delay((unsigned long)((10)*(16000000/4000.0)));
+            _delay((unsigned long)((10)*(8000000/4000.0)));
         }
     }
 }
@@ -1961,16 +1988,24 @@ void HandleKeypadReading(unsigned char value)
         setTemp = minSetTemp;
 }
 
+void InitADC()
+{
+    TRISA |= 0x04;
+    ADCON0 = 0x01;
+    ADCON1 = 0x80;
+    _delay((unsigned long)((20)*(8000000/4000000.0)));
+}
+
 void InitLCD()
 {
     PORTE = PORTE & 0x02;
     PORTE = PORTE & 0x04;
-    _delay((unsigned long)((20)*(16000000/4000.0)));
+    _delay((unsigned long)((20)*(8000000/4000.0)));
     PORTE = PORTE | 0x02;
     SendLCD(0x38, 0x00);
-    _delay((unsigned long)((5)*(16000000/4000.0)));
+    _delay((unsigned long)((5)*(8000000/4000.0)));
     SendLCD(0x38, 0x00);
-    _delay((unsigned long)((1)*(16000000/4000.0)));
+    _delay((unsigned long)((1)*(8000000/4000.0)));
     SendLCD(0x38, 0x00);
     SendLCD(0x0F, 0x00);
     SendLCD(0x01, 0x00);
@@ -2001,6 +2036,30 @@ void ManageDisplays()
             UpdateLCDViewWithNumber(0xC6,setTemp);
 }
 
+void ManageCooler(char duty)
+{
+    if(dutyCounter<duty)
+    {
+        PORTC |= 1<<2;
+    }
+    else
+    {
+        PORTC &= ~(1<<2);
+    }
+}
+
+void ManageHeater(char duty)
+{
+    if(dutyCounter<duty)
+    {
+        PORTC |= 1<<5;
+    }
+    else
+    {
+        PORTC &= ~(1<<5);
+    }
+}
+
 void MotorRotation(char direction, char amplitude)
 {
     TRISD &= 0b00001111;
@@ -2008,6 +2067,16 @@ void MotorRotation(char direction, char amplitude)
     {
         DriveMotor(direction);
     }
+}
+
+int ReadADC(char channel)
+{
+    ADCON0 &= 0xC7;
+    ADCON0 |= ((channel & 0x07)<<3);
+    _delay((unsigned long)((10)*(8000000/4000000.0)));
+    ADCON0 |= 0x04;
+    while(ADCON0 & 0x04);
+    return ADRESL | (ADRESH << 8);
 }
 
 void ReadHumidity()
@@ -2018,17 +2087,11 @@ void ReadHumidity()
         else humidity += 0.1;
         postScalerHum = 0;
     }
-
 }
 
 void ReadTemperature()
 {
-    if(postScalerTemp > 70)
-    {
-        if(temperature >= 90) temperature = -90;
-        else temperature += 0.1;
-        postScalerTemp = 0;
-    }
+    temperature = (float)(ReadADC(0x02) * 0.489);
 }
 
 
@@ -2040,9 +2103,9 @@ void SendLCD(char data,char type)
     PORTD = data;
     if(type) PORTE |= 0x04;
     else PORTE &= ~0x04;
-    _delay((unsigned long)((3)*(16000000/4000.0)));
+    _delay((unsigned long)((3)*(8000000/4000.0)));
     PORTE &= ~0x02;
-    _delay((unsigned long)((3)*(16000000/4000.0)));
+    _delay((unsigned long)((3)*(8000000/4000.0)));
     PORTE |= 0x02;
 }
 
@@ -2070,12 +2133,6 @@ void SendLCDString(const char *string)
     }
 }
 
-void UpdateLCDView(char position, const char *string)
-{
-    SendLCD(position, 0x00);
-    SendLCDString(string);
-}
-
 
 void UpdateLCDViewWithNumber(char position, float number)
 {
@@ -2101,14 +2158,6 @@ void UpdateLCDViewWithNumber(char position, float number)
 
 void UpdateTempHumDisplay()
 {
-    if (oldHumidity != humidity)
-    {
         UpdateLCDViewWithNumber(0xCA, humidity);
-        oldHumidity = humidity;
-    }
-    if (oldTemperature != temperature)
-    {
         UpdateLCDViewWithNumber(0x8A, temperature);
-        oldTemperature = temperature;
-    }
 }
