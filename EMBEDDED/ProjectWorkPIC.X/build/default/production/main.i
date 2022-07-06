@@ -1912,8 +1912,15 @@ void CheckAlarmButton()
         if(flags & 0x04)
         {
             flags &= ~0x04;
+            PrepareBoolDataPacket(0x20, 0x00);
         }
-        else flags |= 0x04;
+        else
+        {
+            flags |= 0x04;
+            PrepareBoolDataPacket(0x20, 0x01);
+        }
+
+        UART_TxBoolDataPacket(boolDataPacketTx);
     }
     if((PORTB & 0x04) && !oldRB2)
     {
@@ -1964,7 +1971,9 @@ void CheckOpenDoorButton()
             doorOpen = 0;
         }
         else doorOpen = 1;
-    }
+        PrepareBoolDataPacket(0x10, doorOpen);
+        UART_TxBoolDataPacket(boolDataPacketTx);
+   }
     if((PORTB & 0x08) && !oldRB3)
     {
         _delay((unsigned long)((10)*(8000000/4000.0)));
@@ -2236,11 +2245,10 @@ void UpdateTempHumDisplay()
 
 void UART_Init(unsigned long baudRate)
 {
+    SPBRG = (char)(8000000/(long)(16UL*baudRate))-1;
     TRISC=0x80;
     TXSTA=(1<<5);
     RCSTA=(1<<7) | (1<<4);
-    SPBRG = (char)(8000000/(long)(16UL*baudRate))-1;
-
     INTCON |= 0xC0;
     PIE1 |= 0x22;
 
@@ -2408,11 +2416,11 @@ void HandleRequest()
         }
         if(dataPacketRx[2] == 0x04)
         {
-
+            setTemp = (float)(dataPacketRx[3] + dataPacketRx[4]*0.1);
         }
         if(dataPacketRx[2] == 0x10)
         {
-
+            doorOpen = dataPacketRx[3];
         }
     }
 }

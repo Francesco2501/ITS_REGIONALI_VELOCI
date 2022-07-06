@@ -242,8 +242,15 @@ void CheckAlarmButton()
         if(flags & ALARM_ON)
         {
             flags &= ~ALARM_ON;
+            PrepareBoolDataPacket(ALARM_TYPE, 0x00);
         }
-        else flags |= ALARM_ON;
+        else 
+        {
+            flags |= ALARM_ON;
+            PrepareBoolDataPacket(ALARM_TYPE, 0x01);
+        }
+        
+        UART_TxBoolDataPacket(boolDataPacketTx);
     }
     if((PORTB & 0x04) && !oldRB2)
     {
@@ -294,7 +301,9 @@ void CheckOpenDoorButton()
             doorOpen = 0;
         }
         else doorOpen = 1;
-    }
+        PrepareBoolDataPacket(DOOR_TYPE, doorOpen);
+        UART_TxBoolDataPacket(boolDataPacketTx);
+   }
     if((PORTB & 0x08) && !oldRB3)
     {
         __delay_ms(10);
@@ -565,12 +574,11 @@ void UpdateTempHumDisplay()
 }
 
 void UART_Init(unsigned long baudRate)
-{    
+{  
+    SPBRG = (char)(_XTAL_FREQ/(long)(16UL*baudRate))-1; 
     TRISC=0x80;            // CONFIGURE RX PIN AS INPUT AND TX AS OUTPUT  
     TXSTA=(1<<SBIT_TXEN);  // ASYNC MODE, 8-BIT, ENABLE TX
     RCSTA=(1<<SBIT_SPEN) | (1<<SBIT_CREN);  // ENABLE SERIAL PORT AND CONTINUOUS RECEIVE
-    SPBRG = (char)(_XTAL_FREQ/(long)(16UL*baudRate))-1;
-    
     INTCON |= 0xC0; //ENABLE GIE AND PEIE
     PIE1 |= 0x22; //ENABLE RCIE AND TXIE
     
@@ -738,11 +746,11 @@ void HandleRequest()
         }
         if(dataPacketRx[2] == DESIRED_TEMPERATURE_TYPE)
         {
-            //desired_temp = dataPacketRX[2] + data?acketRX[3]*0.1;
+            setTemp = (float)(dataPacketRx[3] + dataPacketRx[4]*0.1);
         }
         if(dataPacketRx[2] == DOOR_TYPE)
         {
-            //desired_temp = dataPacketRX[2] + data?acketRX[3]*0.1;
+            doorOpen = dataPacketRx[3];
         }
     }
 }
