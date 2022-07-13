@@ -743,10 +743,15 @@ void HandleRequest()
         {
             //ACTIVATE ALARM
             alarmOn = dataPacketRx[3];
+            //SEND BACK NEW ALARM STATE
+            PrepareBoolDataPacket(0x20,alarmOn);
+            UART_TxBoolDataPacket(boolDataPacketTx);
         }
         if(dataPacketRx[2] == DESIRED_TEMPERATURE_TYPE)
         {
             setTemp = (float)(dataPacketRx[3] + dataPacketRx[4]*0.1);
+            if(currentDisplay == 3)
+                UpdateLCDViewWithNumber(0xC6,setTemp);
         }
         if(dataPacketRx[2] == DOOR_TYPE)
         {

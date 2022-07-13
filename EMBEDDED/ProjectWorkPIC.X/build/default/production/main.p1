@@ -2555,142 +2555,155 @@ Version 4.0 HI-TECH Software Intermediate Code
 "745
 [; ;main.c: 745:             alarmOn = dataPacketRx[3];
 [e = _alarmOn *U + &U _dataPacketRx * -> -> -> 3 `i `ui `ux -> -> # *U &U _dataPacketRx `ui `ux ]
-"746
-[; ;main.c: 746:         }
+"747
+[; ;main.c: 747:             PrepareBoolDataPacket(0x20,alarmOn);
+[e ( _PrepareBoolDataPacket (2 , -> -> 32 `i `uc -> _alarmOn `uc ]
+"748
+[; ;main.c: 748:             UART_TxBoolDataPacket(boolDataPacketTx);
+[e ( _UART_TxBoolDataPacket (1 &U _boolDataPacketTx ]
+"749
+[; ;main.c: 749:         }
 }
 [e :U 257 ]
-"747
-[; ;main.c: 747:         if(dataPacketRx[2] == 0x04)
-[e $ ! == -> *U + &U _dataPacketRx * -> -> -> 2 `i `ui `ux -> -> # *U &U _dataPacketRx `ui `ux `i -> 4 `i 258  ]
-"748
-[; ;main.c: 748:         {
-{
-"749
-[; ;main.c: 749:             setTemp = (float)(dataPacketRx[3] + dataPacketRx[4]*0.1);
-[e = _setTemp -> + -> -> *U + &U _dataPacketRx * -> -> -> 3 `i `ui `ux -> -> # *U &U _dataPacketRx `ui `ux `i `d * -> -> *U + &U _dataPacketRx * -> -> -> 4 `i `ui `ux -> -> # *U &U _dataPacketRx `ui `ux `i `d .0.1 `f ]
 "750
-[; ;main.c: 750:         }
-}
-[e :U 258 ]
+[; ;main.c: 750:         if(dataPacketRx[2] == 0x04)
+[e $ ! == -> *U + &U _dataPacketRx * -> -> -> 2 `i `ui `ux -> -> # *U &U _dataPacketRx `ui `ux `i -> 4 `i 258  ]
 "751
-[; ;main.c: 751:         if(dataPacketRx[2] == 0x10)
-[e $ ! == -> *U + &U _dataPacketRx * -> -> -> 2 `i `ui `ux -> -> # *U &U _dataPacketRx `ui `ux `i -> 16 `i 259  ]
-"752
-[; ;main.c: 752:         {
+[; ;main.c: 751:         {
 {
+"752
+[; ;main.c: 752:             setTemp = (float)(dataPacketRx[3] + dataPacketRx[4]*0.1);
+[e = _setTemp -> + -> -> *U + &U _dataPacketRx * -> -> -> 3 `i `ui `ux -> -> # *U &U _dataPacketRx `ui `ux `i `d * -> -> *U + &U _dataPacketRx * -> -> -> 4 `i `ui `ux -> -> # *U &U _dataPacketRx `ui `ux `i `d .0.1 `f ]
 "753
-[; ;main.c: 753:             doorOpen = dataPacketRx[3];
-[e = _doorOpen -> *U + &U _dataPacketRx * -> -> -> 3 `i `ui `ux -> -> # *U &U _dataPacketRx `ui `ux `uc ]
+[; ;main.c: 753:             if(currentDisplay == 3)
+[e $ ! == -> _currentDisplay `i -> 3 `i 259  ]
 "754
-[; ;main.c: 754:         }
-}
+[; ;main.c: 754:                 UpdateLCDViewWithNumber(0xC6,setTemp);
+[e ( _UpdateLCDViewWithNumber (2 , -> -> 198 `i `uc _setTemp ]
 [e :U 259 ]
 "755
-[; ;main.c: 755:     }
+[; ;main.c: 755:         }
+}
+[e :U 258 ]
+"756
+[; ;main.c: 756:         if(dataPacketRx[2] == 0x10)
+[e $ ! == -> *U + &U _dataPacketRx * -> -> -> 2 `i `ui `ux -> -> # *U &U _dataPacketRx `ui `ux `i -> 16 `i 260  ]
+"757
+[; ;main.c: 757:         {
+{
+"758
+[; ;main.c: 758:             doorOpen = dataPacketRx[3];
+[e = _doorOpen -> *U + &U _dataPacketRx * -> -> -> 3 `i `ui `ux -> -> # *U &U _dataPacketRx `ui `ux `uc ]
+"759
+[; ;main.c: 759:         }
+}
+[e :U 260 ]
+"760
+[; ;main.c: 760:     }
 }
 [e :U 255 ]
-"756
-[; ;main.c: 756: }
+"761
+[; ;main.c: 761: }
 [e :UE 248 ]
 }
-"758
-[; ;main.c: 758: void ManageReceivedPacket(void)
+"763
+[; ;main.c: 763: void ManageReceivedPacket(void)
 [v _ManageReceivedPacket `(v ~T0 @X0 1 ef ]
-"759
-[; ;main.c: 759: {
+"764
+[; ;main.c: 764: {
 {
 [e :U _ManageReceivedPacket ]
 [f ]
-"760
-[; ;main.c: 760:     if(alarmOn)
-[e $ ! != -> _alarmOn `i -> 0 `i 261  ]
-"761
-[; ;main.c: 761:     {
-{
-"762
-[; ;main.c: 762:         TRISD = 0x00;
-[e = _TRISD -> -> 0 `i `uc ]
-"763
-[; ;main.c: 763:         PORTD = 0XFF;
-[e = _PORTD -> -> 255 `i `uc ]
-"764
-[; ;main.c: 764:     }
-}
-[e :U 261 ]
 "765
-[; ;main.c: 765:     if(!alarmOn)
-[e $ ! ! != -> _alarmOn `i -> 0 `i 262  ]
+[; ;main.c: 765:     if(alarmOn)
+[e $ ! != -> _alarmOn `i -> 0 `i 262  ]
 "766
 [; ;main.c: 766:     {
 {
 "767
-[; ;main.c: 767:        TRISD = 0x00;
+[; ;main.c: 767:         TRISD = 0x00;
 [e = _TRISD -> -> 0 `i `uc ]
 "768
-[; ;main.c: 768:        PORTD = 0X00;
-[e = _PORTD -> -> 0 `i `uc ]
+[; ;main.c: 768:         PORTD = 0XFF;
+[e = _PORTD -> -> 255 `i `uc ]
 "769
 [; ;main.c: 769:     }
 }
 [e :U 262 ]
 "770
-[; ;main.c: 770:     if(flagsSerial & 1<<0x01)
-[e $ ! != & -> _flagsSerial `i << -> 1 `i -> 1 `i -> 0 `i 263  ]
+[; ;main.c: 770:     if(!alarmOn)
+[e $ ! ! != -> _alarmOn `i -> 0 `i 263  ]
 "771
 [; ;main.c: 771:     {
 {
 "772
-[; ;main.c: 772:         flagsSerial &= ~(1<<0x01);
-[e =& _flagsSerial -> ~ << -> 1 `i -> 1 `i `uc ]
+[; ;main.c: 772:        TRISD = 0x00;
+[e = _TRISD -> -> 0 `i `uc ]
+"773
+[; ;main.c: 773:        PORTD = 0X00;
+[e = _PORTD -> -> 0 `i `uc ]
 "774
-[; ;main.c: 774:         if(receivedData == 0xFF)
-[e $ ! == -> _receivedData `i -> 255 `i 264  ]
-"775
-[; ;main.c: 775:         {
-{
-"776
-[; ;main.c: 776:             partCounter = 0;
-[e = _partCounter -> -> 0 `i `uc ]
-"777
-[; ;main.c: 777:         }
+[; ;main.c: 774:     }
 }
-[e :U 264 ]
-"778
-[; ;main.c: 778:         if(receivedData == 0xFE)
-[e $ ! == -> _receivedData `i -> 254 `i 265  ]
-"779
-[; ;main.c: 779:         {
+[e :U 263 ]
+"775
+[; ;main.c: 775:     if(flagsSerial & 1<<0x01)
+[e $ ! != & -> _flagsSerial `i << -> 1 `i -> 1 `i -> 0 `i 264  ]
+"776
+[; ;main.c: 776:     {
 {
+"777
+[; ;main.c: 777:         flagsSerial &= ~(1<<0x01);
+[e =& _flagsSerial -> ~ << -> 1 `i -> 1 `i `uc ]
+"779
+[; ;main.c: 779:         if(receivedData == 0xFF)
+[e $ ! == -> _receivedData `i -> 255 `i 265  ]
 "780
-[; ;main.c: 780:             HandleRequest();
-[e ( _HandleRequest ..  ]
+[; ;main.c: 780:         {
+{
 "781
-[; ;main.c: 781:         }
+[; ;main.c: 781:             partCounter = 0;
+[e = _partCounter -> -> 0 `i `uc ]
+"782
+[; ;main.c: 782:         }
 }
 [e :U 265 ]
-"782
-[; ;main.c: 782:         if(!(partCounter >= 5))
-[e $ ! ! >= -> _partCounter `i -> 5 `i 266  ]
 "783
-[; ;main.c: 783:         {
-{
+[; ;main.c: 783:         if(receivedData == 0xFE)
+[e $ ! == -> _receivedData `i -> 254 `i 266  ]
 "784
-[; ;main.c: 784:             dataPacketRx[partCounter] = receivedData;
-[e = *U + &U _dataPacketRx * -> _partCounter `ux -> -> # *U &U _dataPacketRx `ui `ux _receivedData ]
+[; ;main.c: 784:         {
+{
 "785
-[; ;main.c: 785:             partCounter ++;
-[e ++ _partCounter -> -> 1 `i `uc ]
+[; ;main.c: 785:             HandleRequest();
+[e ( _HandleRequest ..  ]
 "786
 [; ;main.c: 786:         }
 }
 [e :U 266 ]
 "787
-[; ;main.c: 787:     }
-}
-[e :U 263 ]
+[; ;main.c: 787:         if(!(partCounter >= 5))
+[e $ ! ! >= -> _partCounter `i -> 5 `i 267  ]
 "788
-[; ;main.c: 788: }
-[e :UE 260 ]
+[; ;main.c: 788:         {
+{
+"789
+[; ;main.c: 789:             dataPacketRx[partCounter] = receivedData;
+[e = *U + &U _dataPacketRx * -> _partCounter `ux -> -> # *U &U _dataPacketRx `ui `ux _receivedData ]
+"790
+[; ;main.c: 790:             partCounter ++;
+[e ++ _partCounter -> -> 1 `i `uc ]
+"791
+[; ;main.c: 791:         }
+}
+[e :U 267 ]
+"792
+[; ;main.c: 792:     }
+}
+[e :U 264 ]
+"793
+[; ;main.c: 793: }
+[e :UE 261 ]
 }
 [a 1C 83 121 115 116 101 109 32 83 116 97 114 116 101 100 0 ]
 [a 5C 83 101 116 32 84 101 109 112 101 114 97 116 117 114 101 58 0 ]

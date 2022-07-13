@@ -4514,19 +4514,24 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Francesco Sartori\\.nuget\\packages\\": {}
+    "C:\\Users\\rconte\\.nuget\\packages\\": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Francesco Sartori\\source\\repos\\ITS_REGIONALI_VELOCI\\CLOUD\\ITS.PW_ANNO2.GRUPPO4.DeviceToCloud\\ITS.PW_ANNO2.GRUPPO4.DeviceToCloud.csproj",
+      "projectUniqueName": "C:\\Users\\rconte\\Desktop\\PW\\ITS_REGIONALI_VELOCI\\CLOUD\\ITS.PW_ANNO2.GRUPPO4.DeviceToCloud\\ITS.PW_ANNO2.GRUPPO4.DeviceToCloud.csproj",
       "projectName": "ITS.PW_ANNO2.GRUPPO4.DeviceToCloud",
-      "projectPath": "C:\\Users\\Francesco Sartori\\source\\repos\\ITS_REGIONALI_VELOCI\\CLOUD\\ITS.PW_ANNO2.GRUPPO4.DeviceToCloud\\ITS.PW_ANNO2.GRUPPO4.DeviceToCloud.csproj",
-      "packagesPath": "C:\\Users\\Francesco Sartori\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Francesco Sartori\\source\\repos\\ITS_REGIONALI_VELOCI\\CLOUD\\ITS.PW_ANNO2.GRUPPO4.DeviceToCloud\\obj\\",
+      "projectPath": "C:\\Users\\rconte\\Desktop\\PW\\ITS_REGIONALI_VELOCI\\CLOUD\\ITS.PW_ANNO2.GRUPPO4.DeviceToCloud\\ITS.PW_ANNO2.GRUPPO4.DeviceToCloud.csproj",
+      "packagesPath": "C:\\Users\\rconte\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\rconte\\Desktop\\PW\\ITS_REGIONALI_VELOCI\\CLOUD\\ITS.PW_ANNO2.GRUPPO4.DeviceToCloud\\obj\\",
       "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+      ],
       "configFilePaths": [
-        "C:\\Users\\Francesco Sartori\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\rconte\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -4571,6 +4576,12 @@
         ],
         "assetTargetFallback": true,
         "warn": true,
+        "downloadDependencies": [
+          {
+            "name": "Microsoft.NETCore.App.Host.win-x64",
+            "version": "[5.0.16, 5.0.16]"
+          }
+        ],
         "frameworkReferences": {
           "Microsoft.NETCore.App": {
             "privateAssets": "all"
